@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% include 'snippets/head.html' %}
+    <title>Bootstrap Blog - {% block head_title %}Bahutara{% endblock %}</title>
+</head>
+<body>
+<div class="KW_progressContainer">
+    <div class="KW_progressBar"></div>
+</div>
+<div class="page">
+
+    {% include 'snippets/header.html' %}
+
+    {% block content %}
+    {% endblock %}
+
+    {% include 'snippets/footer.html' %}
+
+</div>
+{% include 'snippets/scripts.html' %}
+
+{% block extra_body %}
+{% endblock %}
+</body>
+
+</html>

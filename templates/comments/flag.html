@@ -1,0 +1,65 @@
+{% extends "django_comments_xtd/base.html" %}
+{% load i18n %}
+{% load comments_xtd %}
+
+{% block head_title %}{% trans "Flag comment" %}{% endblock %}
+
+{% block header %}
+<a href="{{ comment.content_object.get_absolute_url }}">{{ comment.content_object }}</a>
+{% endblock %}
+
+{% block content %}
+<section class="ftco-section">
+    <div class="container mt-5">
+        <div class="row justify-content-center mb-5 pb-5">
+            <div class="col-md-7 text-center heading-section">
+                <span>{% trans "Flag this comment?" %}</span>
+                <h4>
+                    {% trans "click on the flag button to mark the following comment as inappropriate." %}
+                </h4>
+            </div>
+        </div>
+        <div class="row d-flex justify-content-center">
+            <div class="col-md-8">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <ul class="comment-list">
+                            <li class="comment">
+                                <div class="vcard bio">
+                                    {{ comment.user_email|xtd_comment_gravatar }}
+                                </div>
+                                <div class="comment-body">
+                                    <h3 class="text-dark">
+                                        {% if comment.user_url %}
+                                        <a href="{{ comment.user_url }}" target="_new">{% endif %}
+                                            {{ comment.user_name }}{% if comment.user_url %}</a>{% endif %}
+                                    </h3>
+                                    <div class="meta">{{ comment.submit_date|date:"N j, Y, P" }}</div>
+                                    <p>{{ comment.comment }}</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <form action="." method="post">{% csrf_token %}
+                        <input type="hidden" name="next" value="{{ comment.get_absolute_url }}" />
+                        <div class="form-group">
+                            <div class="text-center">
+                                <input type="submit" name="submit" class="btn py-2 px-4 btn-danger" value="{% trans "Flag" %}" />
+                                <a class="btn py-2 px-4 btn-secondary"
+                                    href="{{ comment.get_absolute_url }}">{% trans "cancel" %}</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                {% with object_absolute_url=comment.content_object.get_absolute_url %}
+                {% if object_absolute_url %}
+                <p class="text-center">
+                    {% trans "Commented on "%}&nbsp;<a href="{{ object_absolute_url }}">{{ comment.content_object }}</a>
+                </p>
+                {% endif %}
+                {% endwith %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,7 @@
+<form action="{% url 'subscribe' %}" method="post">
+    {% csrf_token %}
+    <div class="form-group">
+        {{ form }}
+        <input type="submit" value="Subscribe">
+    </div>
+</form>

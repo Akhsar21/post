@@ -1,0 +1,24 @@
+{% if allow_feedback %}
+<span class="small">
+    
+    <a href="{% url 'comments-xtd-like' item.comment.pk %}"
+    class="{% if not item.likedit %}text-muted{% endif %} mr-1">
+        <span class="icon-thumbs-up"></span></a>
+
+    {% if show_feedback and item.likedit_users %}
+    <a class="text-white mr-1" data-toggle="tooltip"
+       title="{{ item.likedit_users|join:'<br/>' }}">
+        {{ item.likedit_users|length }}</a>
+    {% endif %}
+    
+    <a href="{% url 'comments-xtd-dislike' item.comment.pk %}"
+    class="{% if not item.dislikedit %}text-muted{% endif %} mr-1 ml-3">
+    <span class="icon-thumbs-down"></span></a>
+
+    {% if show_feedback and item.dislikedit_users %}
+    <a class="text-white mr-1" data-toggle="tooltip"
+       title="{{ item.dislikedit_users|join:'<br/>' }}">
+        {{ item.dislikedit_users|length }}</a>
+    {% endif %}
+</span>
+{% endif %}

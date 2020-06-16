@@ -1,0 +1,58 @@
+{% extends "django_comments_xtd/base.html" %}
+{% load i18n %}
+{% load comments_xtd %}
+
+{% block head_title %}{% trans "Remove comment" %}{% endblock %}
+
+{% block content %}
+<section class="ftco-section">
+    <div class="container mt-5">
+        <div class="row justify-content-center mb-5 pb-5">
+            <div class="col-md-7 text-center heading-section">
+                <span>{% trans "Remove this comment?" %}</span>
+                <h4 class="text-lowercase">
+                    {% trans "As a moderator you can delete comments. Deleting a comment does not remove it from the site, only prevents your website from showing the text. Click on the remove button to delete the following comment:" %}
+                </h4>
+            </div>
+        </div>
+        <div class="row d-flex justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body">
+                        <ul class="comment-list">
+                            <li class="comment">
+                                <div class="vcard bio">
+                                    {{ comment.user_email|xtd_comment_gravatar }}
+                                </div>
+                                <div class="comment-body">
+                                    <h3 class="text-dark">
+                                        {% if comment.user_url %}
+                                        <a href="{{ comment.user_url }}" target="_new">{% endif %}
+                                            {{ comment.user_name }}{% if comment.user_url %}</a>{% endif %}
+                                    </h3>
+                                    <div class="meta">{{ comment.submit_date|date:"N j, Y, P" }}</div>
+                                    <p>{{ comment.comment }}</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="mt-4">
+                        <form action="." method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="next" value="{{ comment.get_absolute_url }}" />
+                            <div class="form-group">
+                                <div class="text-center">
+                                    <input type="submit" name="submit" class="btn py-2 px-4 btn-danger"
+                                        value="{% trans "remove" %}" />
+                                    <a class="btn py-2 px-4 btn-secondary"
+                                        href="{{ comment.get_absolute_url }}">cancel</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

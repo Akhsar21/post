@@ -1,0 +1,109 @@
+{% load static %}
+{% load crispy_forms_tags %}
+{% load comments %}
+{% load comments_xtd %}
+
+
+<div class="pt-5 mt-5">
+    {% get_comment_count for object as comment_count %}
+    <h3 class="mb-5">
+        {{ comment_count }} comment{{ comment_count|pluralize }}
+    </h3>
+    {% comment %} <h3 class="mb-5">{{ post.comment_count }} Comment{{ post.comment_count|pluralize }}</h3>
+    {% endcomment %}
+    <ul class="comment-list">
+        {% if comment_count %}
+            {% render_xtdcomment_tree for object allow_flagging allow_feedback show_feedback %}
+        {% endif %}
+        {% comment %} {% for comment in post.get_comments %}
+        <li class="comment">
+            <div class="vcard bio">
+                {% if comment.user.author %}
+                <img src="{{ comment.user.author.avatar.url }}" alt="Image placeholder">
+                {% else %}
+                <img src="{% static 'img/user.svg' %}" alt="...">
+                {% endif %}
+            </div>
+            <div class="comment-body">
+                <h3>{{ comment.user.username|capfirst }}</h3>
+                <div class="meta">{{ comment.timestamp }}</div>
+                <p>{{ comment.content }}</p>
+                <p><a href="#" class="reply">Reply</a></p>
+            </div>
+
+            <ul class="children">
+                {% for reply in comment.replies.all %}
+                <li class="comment">
+                    <div class="vcard bio">
+                        <img src="images/person_1.jpg" alt="Image placeholder">
+                    </div>
+                    <div class="comment-body">
+                        <h3>{{ reply.user.username|capfirst }}</h3>
+                        <div class="meta">{{ comment.timestamp }}</div>
+                        <p>{{ reply.content }}</p>
+                        <p><a href="#" class="reply">Reply</a></p>
+                    </div>
+
+                    {% if request.user.is_authenticated %}
+                    <div class="comment-form-wrap">
+                        <form action="." method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="comment_id" value="{{ comment.id }}">
+                            <div class="form-group">
+                                <label for="message">Reply</label>
+                                {{ form|crispy }}
+                            </div>
+                            <div class="form-group">
+                                <input class="btn py-2 px-4 btn-primary" type="submit" value="Post Comment">
+                            </div>
+                        </form>
+                    </div>
+                    {% endif %}
+
+                </li>
+                {% endfor %}
+            </ul>
+        </li>
+        {% endfor %} {% endcomment %}
+    </ul>
+    <!-- END comment-list -->
+    {% comment %} {% if object.allow_comments %} {% endcomment %}
+    <div class="comment">
+        <h3 class="mb-5">Leave a comment</h3>
+        <div class="well">
+            {% render_comment_form for object %}
+        </div>
+    </div>
+    {% comment %} {% endif %} {% endcomment %}
+
+    {% if comment_count %}
+    <ul class="media-list">
+        
+    </ul>
+    {% endif %}
+    {% comment %} {% if request.user.is_authenticated %}
+    <div class="comment-form-wrap pt-5">
+        <h3 class="mb-5">Leave a comment</h3>
+        <form action="." method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="message">Comment</label>
+                {{ form|crispy }}
+            </div>
+            <div class="form-group">
+                <input class="btn py-2 px-4 btn-primary" type="submit" value="Post Comment">
+            </div>
+        </form>
+    </div>
+    {% else %}
+    <a href="{% url 'account_login' %}">Login <span class="icon-sign-in"></span></a> to Comment
+    {% endif %} {% endcomment %}
+</div>
+
+{% block extra_body %}
+<script>
+  $(function() {
+    $('[data-toggle="tooltip"]').tooltip({html: true});
+  });
+</script>
+{% endblock %}

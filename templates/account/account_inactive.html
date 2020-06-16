@@ -1,0 +1,20 @@
+{% extends "account/base.html" %}
+
+{% load i18n %}
+
+{% block head_title %}{% trans "Account Inactive" %}{% endblock %}
+
+{% block content %}
+<section class="ftco-section">
+    <div class="container mt-5">
+        <div class="row justify-content-center mb-5 pb-5">
+            <div class="col-md-7 text-center heading-section">
+                <span>{% trans "Account Inactive" %}</span>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <h3>{% trans "This account is inactive." %}</h3>
+        </div>
+    </div>
+</section>
+{% endblock %}

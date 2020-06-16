@@ -1,0 +1,22 @@
+{% extends "socialaccount/base.html" %}
+
+{% load i18n %}
+
+{% block head_title %}{% trans "Social Network Login Failure" %}{% endblock %}
+
+{% block content %}
+<section class="ftco-section">
+    <div class="container mt-5">
+        <div class="row justify-content-center mb-5 pb-5">
+            <div class="col-md-7 text-center heading-section">
+                <span>{% trans "Social Network Login Failure" %}</span>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <h4>{% trans "An error occurred while attempting to login via your social network account." %}</h4>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

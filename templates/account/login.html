@@ -1,0 +1,65 @@
+{% extends "account/base.html" %}
+
+{% load static %}
+{% load i18n %}
+{% load account socialaccount %}
+{% load crispy_forms_tags %}
+
+{% block head_title %}{% trans "Sign In" %}{% endblock %}
+
+{% block content %}
+<style>
+    .alert {
+        padding-left: 0;
+    }
+
+    ul {
+        list-style-type: none;
+    }
+</style>
+
+<link rel="stylesheet" href="{% static 'css/bootstrap-social.css' %}">
+
+<section class="ftco-section">
+    <div class="container mt-5">
+        <div class="row justify-content-center mb-5 pb-5">
+            <div class="col-md-7 text-center heading-section">
+                <span>{% trans "Sign In" %}</span>
+                {% get_providers as socialaccount_providers %}
+
+                {% if not socialaccount_providers %}
+                <h2>{% blocktrans with site.name as site_name %}please sign in with one
+                    of your existing third party accounts. or,
+                    <a href="{{ signup_url }}">sign up</a>
+                    for a {{ site_name }} account and sign in below:{% endblocktrans %}</h2>
+
+                {% include "socialaccount/snippets/login_extra.html" %}
+
+                {% else %}
+                <h2>{% blocktrans %}if you have not created an account yet, then please
+                    <a href="{{ signup_url }}">sign up</a> first.{% endblocktrans %}</h2>
+                {% endif %}
+            </div>
+        </div>
+        <div class="row wow fadeIn justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <form class="login" method="POST" action="{% url 'account_login' %}">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    {% if redirect_field_value %}
+                    <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+                    {% endif %}
+                    <button class="btn py-2 px-4 btn-primary" type="submit">{% trans "Sign In" %}</button>
+                    <a href="{% url 'account_reset_password' %}" class="float-right">{% trans "Forgot Password?" %}</a>
+                </form>
+                <div class="text-center mt-5">
+                    <div class="login-or">{% trans 'or login with' %}</div>
+                    <div class="row justify-content-center mt-5">
+                        {% include "socialaccount/snippets/provider_list.html" with process="login" %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

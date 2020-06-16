@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="ftco-section">
+    <div class="container mt-5">
+        <div class="row justify-content-center mb-5 pb-5">
+            <div class="col-md-7 text-center heading-section">
+                <span>Delete</span>
+                <h3 class="text-lowercase">{{ object }}</h3>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="text-center">
+                <form method="post">
+                    {% csrf_token %}
+                    <input class="btn py-2 px-4 btn-danger shadow-none" type="submit" value="Confirm">
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

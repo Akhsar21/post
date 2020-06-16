@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block head_title %}Post Category {{ category }}{% endblock %} 
+
+{% block content %}
+<section class="ftco-section">
+    <div class="container mt-5">
+        <div class="row justify-content-center mb-5 pb-5">
+            <div class="col-md-7 text-center heading-section">
+                <a class="text-secondary" href="{% url 'category-list' %}"><span>Category</span></a>
+                <h2 class="text-lowercase">{{ category }}</h2>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+        {% for post in post_list %}
+        <a href="{{ post.get_absolute_url }}">{{ post }}</a>
+        {{ post.description|truncatewords:30 }}
+        {% empty %}
+        <h3>There are no posts yet.</h3>
+        {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

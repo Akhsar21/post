@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load comments %}
+
+{% block head_title %}{{ title }}{% endblock %}
+
+{% block content %}
+
+<section class="ftco-section">
+    <div class="container mt-5">
+        <div class="row justify-content-center mb-5 pb-5">
+            <div class="col-md-7 text-center heading-section">
+                <span>Blog</span>
+                <h2>read our blog
+                    {% if user.is_staff %}
+                    <a class="btn btn-outline btn-sm text-white" href="{% url 'post-create' %}">
+                        <span class="icon-create_new_folder"></span>
+                    </a>
+                    {% endif %}
+                </h2>
+            </div>
+        </div>
+        <div class="row">
+            {% for post in queryset %}
+            <div class="col-md-4">
+                <div class="blog-entry">
+                    <a href="{{ post.get_absolute_url }}" class="block-20"
+                        style="background-image: url({{ post.thumbnail.url }})">
+                    </a>
+                    <div class="text p-4 d-block">
+                        <div class="meta mb-3">
+                            <div><a href="#">{{ post.created|date }}</a></div>
+                            <div><a href="#">{{ post.author }}</a></div>
+                            <div>
+                                <a href="#" class="meta-chat"><span class="icon-chat"></span>
+                                    {% for object in object_list %}
+                                    {% get_comment_count for object as comment_count %}
+                                    {{ comment_count }}
+                                    {% endfor %}
+                                    {% comment %} {{ post.comment_count }} {% endcomment %}
+                                </a>
+                            </div>
+                            <div>
+                                <a href="#" class="meta-chat"><span class="icon-eye">{{ post.view_count }}</span></a>
+                            </div>
+                        </div>
+                        <h3 class="heading">
+                            <a href="{{ post.get_absolute_url }}">{{ post }}</a>
+                        </h3>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% include 'snippets/pagination.html' %}
+    </div>
+</section>
+
+{% endblock %}

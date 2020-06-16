@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block head_title %}Contact Us{% endblock %}
+
+{% block content %}
+<section class="ftco-section contact-section">
+  <div class="container mt-5">
+    <div class="row justify-content-center mb-5 pb-5">
+      <div class="col-md-7 text-center heading-section">
+        <span>Contact</span>
+        <h2>information</h2>
+      </div>
+    </div>
+    <div class="row d-flex mb-5 contact-info">
+      <div class="col-md-3">
+        <p><span>Address:</span> 198 West 21th Street, Suite 721 New York NY 10016</p>
+      </div>
+      <div class="col-md-3">
+        <p><span>Phone:</span> <a href="tel://1234567920">+ 1235 2355 98</a></p>
+      </div>
+      <div class="col-md-3">
+        <p><span>Email:</span> <a href="mailto:info@yoursite.com">info@yoursite.com</a></p>
+      </div>
+      <div class="col-md-3">
+        <p><span>Website:</span> <a href="#">yoursite.com</a></p>
+      </div>
+    </div>
+    <div class="row block-9">
+      <div class="col-md-6 pr-md-5">
+        <form action="" method="POST">
+          {% csrf_token %}
+          {{ form|crispy }}
+          <div class="form-group">
+            <input class="btn btn-primary py-2 px-4 shadow-none" type="submit" value="Send Message">
+          </div>
+        </form>
+      </div>
+      <div class="col-md-6" id="map"></div>
+    </div>
+  </div>
+</section>
+{% endblock %}

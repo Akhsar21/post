@@ -1,0 +1,66 @@
+{% load static %}
+<nav id="colorlib-main-nav" role="navigation">
+    <a href="#" class="js-colorlib-nav-toggle colorlib-nav-toggle active"><i></i></a>
+    <div class="js-fullheight colorlib-table">
+        <div class="img" style="background-image: url({% static "images/author-2.jpg" %});"></div>
+        <div class="colorlib-table-cell js-fullheight">
+            <div class="row no-gutters">
+                <div class="col-md-12 text-center">
+                    <h1 class="mb-4">
+                        {% if user.is_staff %}
+                        <a href="/admin" class="logo">
+                        {% else %}
+                        <a href="/" class="logo">
+                        {% endif %}
+                            Akhsar
+                        </a>
+                    </h1>
+                    {% with url_name=request.resolver_match.url_name %}
+                    <ul>
+                        <li class="{% if url_name == 'home' %}active{% endif %}">
+                            <a href="{% url 'home' %}"><span><small>01</small>Home</span></a>
+                        </li>
+                        <li><a href="about.html"><span><small>02</small>About</span></a></li>
+                        <li><a href="services.html"><span><small>03</small>Services</span></a></li>
+                        <li><a href="portfolio.html"><span><small>04</small>Portfolio</span></a></li>
+                        <li class="{% if url_name == 'post-list' %}active{% endif %}">
+                            <a href="{% url 'post-list' %}"><span><small>05</small>Blog</span></a>
+                        </li>
+                        <li class="{% if url_name == 'contact' %}active{% endif %}">
+                            <a href="{% url 'contact' %}"><span><small>06</small>Contact</span></a>
+                        </li>
+                        <li>
+                            {% if request.user.is_authenticated %}
+                            <a class="small" href="{% url 'account_logout' %}"><span class="icon-sign-out"></span></a>
+                            {% else %}
+                            <a class="small" href="{% url 'account_login' %}"><span class="icon-sign-in"></span></a>
+                            {% endif %}
+                        </li>
+                    </ul>
+                    {% endwith %}
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div id="colorlib-page">
+    <header>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="colorlib-navbar-brand">
+                        {% if user.is_staff %}
+                        <a href="/admin" class="colorlib-logo">
+                            {% else %}
+                            <a href="/" class="colorlib-logo">
+                                {% endif %}
+                                <span class="logo-img" style="background-image: url({% static "images/person_1.jpg" %});"></span>
+                                Akhsar
+                        </a>
+                    </div>
+                    <a href="#" class="js-colorlib-nav-toggle colorlib-nav-toggle"><i></i></a>
+                </div>
+            </div>
+        </div>
+    </header>
