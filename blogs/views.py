@@ -4,6 +4,9 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, get_object_or_404, redirect, reverse
 from django.views.generic import View, ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core import serializers
+import json
+from django.http import HttpResponse
 
 from .forms import PostForm
 from .models import Post, Author, PostView, Category, Tag
@@ -178,3 +181,25 @@ class PostTagView(ListView):
         context = super().get_context_data(**kwargs)
         context['tags'] = self.tags
         return context
+
+
+def index(request):
+    template = 'blogs/post_list.html'
+    results = Post.objects.all()
+    jsondata = serializers.serialize('json', results)
+    context = {
+        'results': results,
+        'jsondata': jsondata,
+    }
+    return render(request, template, context)
+
+
+def getdata(request):
+    results = Post.objects.all()
+    jsondata = serializers.serialize('json', results)
+    return HttpResponse(jsondata)
+
+
+def base_layout(request):
+    template = 'base.html'
+    return render(request, template)

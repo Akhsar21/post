@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.utils.text import slugify
 from ckeditor_uploader.fields import RichTextUploadingField
 
-# from django_comments_xtd.moderation import moderator, SpamModerator
+from django_comments_xtd.moderation import moderator, SpamModerator
 from .badwords import badwords
 
 
@@ -90,23 +90,6 @@ class Tag(models.Model):
         })
 
 
-# class Comment(models.Model):
-#     user = models.ForeignKey(User, on_delete=models.CASCADE)
-#     post = models.ForeignKey('Post', related_name='comments',
-#                              on_delete=models.CASCADE)
-#     content = models.TextField()
-#     reply = models.ForeignKey('Comment', null=True, blank=True, related_name='replies',
-#                               on_delete=models.CASCADE)
-#     active = models.BooleanField(default=True)
-#     timestamp = models.DateTimeField(auto_now_add=True)
-
-#     class Meta:
-#         ordering = ['-timestamp']
-
-#     def __str__(self):
-#         return self.user.username
-
-
 class PublishedManager(models.Manager):
     def get_queryset(self):
         return super().get_queryset().filter(status='P')
@@ -119,7 +102,7 @@ class Post(models.Model):
     title = models.CharField(max_length=100)
     slug = models.SlugField(unique=True, blank=True, null=True)
     author = models.ForeignKey(Author,
-                               on_delete=models.CASCADE, blank=True, null=True, editable=False)
+                               on_delete=models.CASCADE, blank=True, null=True)
     content = RichTextUploadingField()
     description = models.TextField(max_length=500)
     created = models.DateTimeField(auto_now_add=True)
@@ -168,54 +151,44 @@ class Post(models.Model):
             'slug': self.slug
         })
 
-    # @property
-    # def get_comments(self):
-    #     return self.comments.all().order_by('-timestamp').filter(reply=None)
-
-    # @property
-    # def comment_count(self):
-    #     return Comment.objects.filter(post=self).count()
-
     @property
     def view_count(self):
         return PostView.objects.filter(post=self).count()
 
 
-# class PostCommentModerator(SpamModerator):
-#     email_notification = True
+class PostCommentModerator(SpamModerator):
+    email_notification = True
 
-#     def moderate(self, comment, content_object, request):
-#         def clean(word):
-#             ret = word
-#             if word.startswith('.') or word.startswith(','):
-#                 ret = word[1:]
-#             if word.endswith('.') or word.endswith(','):
-#                 ret = word[:-1]
-#             return ret
+    def moderate(self, comment, content_object, request):
+        def clean(word):
+            ret = word
+            if word.startswith('.') or word.startswith(','):
+                ret = word[1:]
+            if word.endswith('.') or word.endswith(','):
+                ret = word[:-1]
+            return ret
 
-#         lowcase_comment = comment.comment.lower()
-#         msg = dict([(clean(w), i)
-#                     for i, w in enumerate(lowcase_comment.split())])
-#         for badword in badwords:
-#             if isinstance(badword, str):
-#                 if lowcase_comment.find(badword) > -1:
-#                     return True
-#             else:
-#                 lastindex = -1
-#                 for subword in badword:
-#                     if subword in msg:
-#                         if lastindex > -1:
-#                             if msg[subword] == (lastindex + 1):
-#                                 lastindex = msg[subword]
-#                         else:
-#                             lastindex = msg[subword]
-#                     else:
-#                         break
-#                 if msg.get(badword[-1]) and msg[badword[-1]] == lastindex:
-#                     return True
-#         return super().moderate(comment,
-#                                 content_object,
-#                                 request)
+        lowcase_comment = comment.comment.lower()
+        msg = dict([(clean(w), i)
+                    for i, w in enumerate(lowcase_comment.split())])
+        for badword in badwords:
+            if isinstance(badword, str):
+                if lowcase_comment.find(badword) > -1:
+                    return True
+            else:
+                lastindex = -1
+                for subword in badword:
+                    if subword in msg:
+                        if lastindex > -1:
+                            if msg[subword] == (lastindex + 1):
+                                lastindex = msg[subword]
+                        else:
+                            lastindex = msg[subword]
+                    else:
+                        break
+                if msg.get(badword[-1]) and msg[badword[-1]] == lastindex:
+                    return True
+        return super().moderate(comment, content_object, request)
 
 
-# moderator.register(Post, PostCommentModerator)
+moderator.register(Post, PostCommentModerator)

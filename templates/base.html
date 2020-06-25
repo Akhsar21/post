@@ -1,8 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+{% load pwa %}
+{% load static %}
 <head>
     {% include 'snippets/head.html' %}
+    <meta name="theme-color" content="#493174">
     <title>Bootstrap Blog - {% block head_title %}Bahutara{% endblock %}</title>
+    {% progressive_web_app_meta %}
+    {% comment %} <link rel="manifest" href="{% static 'manifest.webmanifest' %}"> {% endcomment %}
+    <link rel="apple-touch-icon" href="{% static 'icons/aurss.192x192.png' %}">
 </head>
 <body>
 <div class="KW_progressContainer">
@@ -12,12 +18,15 @@
 
     {% include 'snippets/header.html' %}
 
-    {% block content %}
-    {% endblock %}
+    {% comment %} {% block content %}
+    {% endblock %} {% endcomment %}
 
     {% include 'snippets/footer.html' %}
 
 </div>
+
+{% comment %} <script type="text/javascript" src="{% static 'js/idb.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/idbop.js' %}"></script> {% endcomment %}
 {% include 'snippets/scripts.html' %}
 
 {% block extra_body %}
