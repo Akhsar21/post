@@ -6,6 +6,7 @@ const filesToCache = [
   "/static/images/icons/splash-2048x2732.png",
   "/static/css/github.css",
   "/static/js/highlight.pack.js",
+  "/static/js/smooth-scrollbar.js",
 ];
 
 self.addEventListener("message", (event) => {

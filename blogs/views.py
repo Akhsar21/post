@@ -55,9 +55,11 @@ class PostListView(ListView):
 
     def get_context_data(self, **kwargs):
         category_count = get_category_count()
-        most_recent = Post.objects.order_by('-published')[:3]
+        most_recent = Post.objects.order_by('-published')[:6]
+        jsondata = serializers.serialize('json', most_recent)
         context = super().get_context_data(**kwargs)
         context['most_recent'] = most_recent
+        context['jsondata'] = jsondata
         context['page_request_var'] = "page"
         context['title'] = "Read Our Blog"
         context['category_count'] = category_count
@@ -82,6 +84,7 @@ class PostDetailView(DetailView):
         category_count = get_category_count()
         most_recent = Post.objects.order_by('-published')[:3]
         context = super().get_context_data(**kwargs)
+        context['category_count'] = category_count
         context['most_recent'] = most_recent
         context['page_request_var'] = "page"
         return context
@@ -183,23 +186,7 @@ class PostTagView(ListView):
         return context
 
 
-def index(request):
-    template = 'blogs/post_list.html'
-    results = Post.objects.all()
-    jsondata = serializers.serialize('json', results)
-    context = {
-        'results': results,
-        'jsondata': jsondata,
-    }
-    return render(request, template, context)
-
-
 def getdata(request):
     results = Post.objects.all()
     jsondata = serializers.serialize('json', results)
     return HttpResponse(jsondata)
-
-
-def base_layout(request):
-    template = 'base.html'
-    return render(request, template)

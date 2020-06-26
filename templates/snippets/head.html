@@ -1,3 +1,4 @@
+{% load pwa %}
 {% load static %}
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -5,7 +6,7 @@
 <meta name="description" content="">
 <meta name="robots" content="all,follow">
 
-<!-- <link rel="shortcut icon" href="{% static 'images/ico.png' %}"> -->
+{% progressive_web_app_meta %}
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@9.10.12/dist/sweetalert2.min.css">
 

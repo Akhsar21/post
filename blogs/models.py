@@ -30,7 +30,7 @@ class PostView(models.Model):
 
 class Author(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    avatar = models.ImageField(upload_to='avatar')
+    avatar = models.ImageField(upload_to='avatars')
 
     def __str__(self):
         return self.user.username

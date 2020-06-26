@@ -1,36 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
-{% load pwa %}
-{% load static %}
+
 <head>
     {% include 'snippets/head.html' %}
     <meta name="theme-color" content="#493174">
     <title>Bootstrap Blog - {% block head_title %}Bahutara{% endblock %}</title>
-    {% progressive_web_app_meta %}
-    {% comment %} <link rel="manifest" href="{% static 'manifest.webmanifest' %}"> {% endcomment %}
-    <link rel="apple-touch-icon" href="{% static 'icons/aurss.192x192.png' %}">
 </head>
-<body>
-<div class="KW_progressContainer">
-    <div class="KW_progressBar"></div>
-</div>
-<div class="page">
 
-    {% include 'snippets/header.html' %}
+<body id="my-scrollbar">
+    <div class="page">
 
-    {% comment %} {% block content %}
-    {% endblock %} {% endcomment %}
+        {% include 'snippets/header.html' %}
 
-    {% include 'snippets/footer.html' %}
+        {% block content %}
+        {% endblock %}
 
-</div>
+        <div id="offlinedata">
+            <!-- the news will get displayed here from indexedDB in offline mode -->
+        </div>
 
-{% comment %} <script type="text/javascript" src="{% static 'js/idb.js' %}"></script>
-<script type="text/javascript" src="{% static 'js/idbop.js' %}"></script> {% endcomment %}
-{% include 'snippets/scripts.html' %}
+        {% include 'snippets/footer.html' %}
 
-{% block extra_body %}
-{% endblock %}
+    </div>
+
+    {% include 'snippets/scripts.html' %}
+
+    {% block extra_body %}
+    {% endblock %}
 </body>
 
 </html>
