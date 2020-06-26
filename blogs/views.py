@@ -9,7 +9,8 @@ import json
 from django.http import HttpResponse
 
 from .forms import PostForm
-from .models import Post, Author, PostView, Category, Tag
+from .models import Post, Author, PostView, Category, Tag, Like
+from profiles.models import Profile
 from contacts.forms import EmailSignupForm
 from contacts.models import Signup
 
@@ -55,11 +56,14 @@ class PostListView(ListView):
 
     def get_context_data(self, **kwargs):
         category_count = get_category_count()
-        most_recent = Post.objects.order_by('-published')[:6]
-        jsondata = serializers.serialize('json', most_recent)
+        most_recent = Post.objects.order_by('-published')[:3]
+        profile = Profile.objects.get(user=self.request.user)
+        results = Post.objects.all()
+        jsondata = serializers.serialize('json', results)
         context = super().get_context_data(**kwargs)
         context['most_recent'] = most_recent
         context['jsondata'] = jsondata
+        context['profile'] = profile
         context['page_request_var'] = "page"
         context['title'] = "Read Our Blog"
         context['category_count'] = category_count
@@ -83,29 +87,45 @@ class PostDetailView(DetailView):
     def get_context_data(self, **kwargs):
         category_count = get_category_count()
         most_recent = Post.objects.order_by('-published')[:3]
+        profile = Profile.objects.get(user=self.request.user)
         context = super().get_context_data(**kwargs)
         context['category_count'] = category_count
         context['most_recent'] = most_recent
+        context['profile'] = profile
         context['page_request_var'] = "page"
         return context
 
-    # def post(self, request, *args, **kwargs):
-    #     form = CommentForm(request.POST or None)
-    #     if form.is_valid():
-    #         post = self.get_object()
-    #         reply_id = form.cleaned_data.get('comment_id')
-    #         comment_qs = None
-    #         if reply_id:
-    #             comment_qs = Comment.objects.get(id=reply_id)
-    #         form.instance.user = request.user
-    #         form.instance.post = post
-    #         form.instance.reply_id = comment_qs
-    #         form.save()
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        if request.method == 'POST':
+            post = self.get_object()
+            post_id = request.POST.get('post_id')
+            post_obj = Post.objects.get(id=post_id)
+            profile = Profile.objects.get(user=user)
 
-    #         messages.success(self.request, "Thanks for your messages!")
-    #         return redirect(reverse("post-detail", kwargs={
-    #             'slug': post.slug
-    #         }))
+            if profile in post_obj.liked.all():
+                post_obj.liked.remove(profile)
+            else:
+                post_obj.liked.add(profile)
+
+            like, created = Like.objects.get_or_create(
+                user=profile, post_id=post_id)
+
+            if not created:
+                if like.value == 'like':
+                    like.value = 'unlike'
+                else:
+                    like.value = 'like'
+            else:
+                like.value = 'like'
+
+                post_obj.save()
+                like.save()
+
+            # messages.success(self.request, "Thanks for your messages!")
+            return redirect(reverse("post-detail", kwargs={
+                'slug': post.slug
+            }))
 
 
 class PostCreateView(LoginRequiredMixin, CreateView):
@@ -148,6 +168,35 @@ class PostDeleteView(LoginRequiredMixin, DeleteView):
     model = Post
     success_url = '/blog'
     # template_name = 'blogs/post_confirm_delete.html'
+
+
+def like_unlike_post(request):
+    user = request.user
+    if request.method == 'POST':
+        post_id = request.POST.get('post_id')
+        post_obj = Post.objects.get(id=post_id)
+        profile = Profile.objects.get(user=user)
+
+        if profile in post_obj.liked.all():
+            post_obj.liked.remove(profile)
+        else:
+            post_obj.liked.add(profile)
+
+        like, created = Like.objects.get_or_create(
+            user=profile, post_id=post_id)
+
+        if not created:
+            if like.value == 'like':
+                like.value = 'unlike'
+            else:
+                like.value = 'like'
+        else:
+            like.value = 'like'
+
+            post_obj.save()
+            like.save()
+
+    return redirect('post-list')
 
 
 class CategoryView(ListView):

@@ -1,11 +1,11 @@
 from django.contrib import admin
-from .models import Profile
+from .models import Profile, Relationship
 
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
     '''Admin View for Profile'''
 
-    list_display = ('first_name', 'last_name')
+    # list_display = ('first_name', 'last_name')
     # list_filter = ('',)
     # inlines = [
     #     Inline,
@@ -15,3 +15,5 @@ class ProfileAdmin(admin.ModelAdmin):
     # search_fields = ('',)
     # date_hierarchy = ''
     # ordering = ('',)
+
+admin.site.register(Relationship)

@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
-from .models import Author, Category, Post, PostView, Tag
+from .models import Author, Category, Post, PostView, Tag, Like
 
 
 @admin.register(Author)
@@ -27,7 +27,7 @@ class PostAdmin(admin.ModelAdmin):
     list_display = ('title', 'created', 'featured', 'restrict_comment')
     list_filter = ('title', 'created')
     search_fields = ['title']
-    prepopulated_fields = {'slug': ('title',)}
+    # prepopulated_fields = {'slug': ('title',)}
     view_on_site = True
     list_editable = ('featured', 'restrict_comment')
     autocomplete_fields = ['tags']
@@ -41,7 +41,7 @@ class PostAdmin(admin.ModelAdmin):
     #     url = obj.get_absolute_url()
     #     return 'http://127.0.0.1:8000' + url
 
-    readonly_fields = ["created", "updated", "post_image", ]
+    readonly_fields = ["post_image", "slug"]
 
     def post_image(self, obj):
         return mark_safe(
@@ -72,3 +72,4 @@ class CategoryAdmin(admin.ModelAdmin):
 
 
 admin.site.register(PostView)
+admin.site.register(Like)

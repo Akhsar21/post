@@ -1,11 +1,13 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.core.validators import FileExtensionValidator
 from django.urls import reverse
 from django.utils.text import slugify
 from ckeditor_uploader.fields import RichTextUploadingField
 
 from django_comments_xtd.moderation import moderator, SpamModerator
 from .badwords import badwords
+from profiles.models import Profile
 
 
 User = get_user_model()
@@ -13,6 +15,11 @@ User = get_user_model()
 STATUS_CHOICES = (
     ('D', 'Draft'),
     ('P', 'Published'),
+)
+
+LIKE_CHOICES = (
+    ('like', 'Like'),
+    ('unlike', 'Unlike'),
 )
 
 
@@ -105,11 +112,13 @@ class Post(models.Model):
                                on_delete=models.CASCADE, blank=True, null=True)
     content = RichTextUploadingField()
     description = models.TextField(max_length=500)
-    created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
     status = models.CharField(max_length=1,
                               choices=STATUS_CHOICES, default='D')
-    thumbnail = models.ImageField()
+    thumbnail = models.ImageField(upload_to='posts', validators=[
+                                  FileExtensionValidator(['png', 'jpg', 'jpeg'])], blank=True)
+    created = models.DateTimeField(auto_now_add=True, editable=None)
+    updated = models.DateTimeField(auto_now=True, editable=None)
+    liked = models.ManyToManyField(Profile, related_name='likes', blank=True)
     tags = models.ManyToManyField(Tag)
     category = models.ForeignKey(Category,
                                  on_delete=models.SET_NULL, null=True)
@@ -120,17 +129,17 @@ class Post(models.Model):
     # next_post = models.ForeignKey('self', related_name='next',
     #                               on_delete=models.SET_NULL, blank=True, null=True)
 
-    def __str__(self):
-        return self.title
-
-    # def save(self):
-    #     if not self.slug and self.title:
-    #         self.slug = slugify(self.title)
-    #     super().save()
-
     class Meta:
         ordering = ['-created']
         unique_together = ('title', 'slug')
+
+    def __str__(self):
+        return self.title
+
+    def save(self):
+        if not self.slug and self.title:
+            self.slug = slugify(self.title)
+        super().save()
 
     def delete(self):
         self.thumbnail.delete()
@@ -151,9 +160,28 @@ class Post(models.Model):
             'slug': self.slug
         })
 
+    def likes_count(self):
+        return self.liked.all().count()
+
     @property
     def view_count(self):
         return PostView.objects.filter(post=self).count()
+
+
+class Like(models.Model):
+    user = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    value = models.CharField(max_length=6, choices=LIKE_CHOICES)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-created']
+        verbose_name = 'Like'
+        verbose_name_plural = 'Likes'
+
+    def __str__(self):
+        return f"{self.user}-{self.post}-{self.value}"
 
 
 class PostCommentModerator(SpamModerator):

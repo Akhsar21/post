@@ -36,9 +36,21 @@
                         </a>
                         <a href="{% url 'post-delete' slug=post.slug %}" class="text-danger">
                             <span class="icon-trash"></span>
-                        </a>
+                        </a> 
                         {% endif %}
                     </div>
+                    <form action="." method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="post_id" value="{{ post.id }}">
+                        <button type="submit">
+                        {% if profile not in post.liked.all %}
+                        Like
+                        {% else %}
+                        Unlike
+                        {% endif %}
+                        </button>
+                    </form>
+                    {{ post.likes_count }}
                 </div>
 
                 <div class="about-author d-flex pt-5">

@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block head_title %}
+my profile
+{% endblock %}
+
+{% block content %}
+<h1>My Profile</h1>
+
+{% if confirm %}
+<h1>Updated</h1>
+{% endif %}
+
+<form action="" method="post" enctype="multipart/form-data">
+{% csrf_token %}
+{{ form|crispy }}
+<button type="submit">Save</button>
+</form>
+
+{{ profile.first_name }} {{ profile.last_name }}
+<br>
+<img src="{{ profile.avatar.url }}" alt="{{ profile.user.username }}">
+<br>
+{{ profile.bio }}
+<br>
+{{ profile.country }}
+<br>
+{{ profile.get_friends_no }}
+<br>
+<ul>
+    {% for friend in profile.get_friends %}
+    <li>{{ friend }}</li>
+    {% endfor %}
+</ul>
+<br>
+<h3>Number of likes</h3>
+<p>{{ profile.get_likes_given_count }}</p>
+{% endblock %}

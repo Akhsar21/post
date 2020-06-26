@@ -16,5 +16,6 @@ urlpatterns = [
     path("feed/rss", LatestPostsFeed(), name="post_feed"),
     path("category", views.CategoryView.as_view(), name="category-list"),
     path("tag", views.TagView.as_view(), name="tag-list"),
-    path('getdata',views.getdata,name='getdata')
+    path('getdata', views.getdata, name='getdata'),
+    path('liked/', views.like_unlike_post, name='like-post-view'),
 ]
