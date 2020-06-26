@@ -1,0 +1,16 @@
+#toggle{
+    position: absolute;
+    top: 50%;
+    right: 20%;
+    transform: translateY(-50%);
+    width: 30px;
+    height: 30px;
+    background: url();
+    background-size: cover;
+    cursor: pointer;
+}
+
+#toggle.hide{
+    background: url();
+    background-size: cover;
+}

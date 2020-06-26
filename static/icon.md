@@ -19,3 +19,5 @@ splash:
   - "/static/images/icons/splash-1668x2224.png",
   - "/static/images/icons/splash-1668x2388.png",
   - "/static/images/icons/splash-2048x2732.png",
+
+- #toggle onclick->showHide();
