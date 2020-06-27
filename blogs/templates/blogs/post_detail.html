@@ -42,7 +42,7 @@
                     <form action="." method="POST">
                         {% csrf_token %}
                         <input type="hidden" name="post_id" value="{{ post.id }}">
-                        <button type="submit">
+                        <button class="btn btn-outline-secondary btn-xs " type="submit">
                         {% if profile not in post.liked.all %}
                         Like
                         {% else %}
@@ -55,7 +55,7 @@
 
                 <div class="about-author d-flex pt-5">
                     <div class="bio align-self-md-center mr-4">
-                        <img src="{{ post.author.avatar.url }}" alt="Image placeholder" class="img-fluid mb-4">
+                        <img src="{{ post.author.avatar.url }}" alt="{{ post.author }}" class="img-fluid mb-4">
                     </div>
                     <div class="desc align-self-md-center">
                         <h3>About The Author</h3>
