@@ -4,40 +4,41 @@
 
 {% block content %}
 <style>
-.tab {
-  display: block;
-  text-align: center;
-  margin-bottom: 80px !important;
-}
+    .tab {
+        display: block;
+        text-align: center;
+        margin-bottom: 80px !important;
+    }
 
-.tab li {
-  float: none;
-  display: inline-block;
-  *display: inline;
-  zoom: 1;
-}
+    .tab li {
+        float: none;
+        display: inline-block;
+        *display: inline;
+        zoom: 1;
+    }
 
-.tab li a {
-  background: none;
-  color: #b3b3b3;
-  font-size: 16px;
-  text-transform: uppercase;
-  letter-spacing: .2em;
-  border-bottom: 2px solid transparent;
-  padding-left: 0;
-  padding-right: 0;
-  margin: 0 10px;
-}
+    .tab li a {
+        background: none;
+        color: #b3b3b3;
+        font-size: 16px;
+        text-transform: uppercase;
+        letter-spacing: .2em;
+        border-bottom: 2px solid transparent;
+        padding-left: 0;
+        padding-right: 0;
+        margin: 0 10px;
+    }
 
-.tab li a.active {
-  color: #e8e8e8;
-  background: none;
-  border-bottom: 2px solid #8f8f8f;
-}
+    .tab li a.active {
+        color: #e8e8e8;
+        background: none;
+        border-bottom: 2px solid #8f8f8f;
+    }
 
-.tab, .nav-pills {
-  text-align: center;
-}
+    .tab,
+    .nav-pills {
+        text-align: center;
+    }
 </style>
 
 <section class="ftco-section">
@@ -52,17 +53,18 @@
             <ul class="nav tab mb-3 justify-content-center" id="pills-tab" role="tablist">
                 {% for category in object_list %}
                 <li class="nav-item">
-                    <a class="nav-link {% if forloop.first %}active{% endif %}" id="{{ category.slug }}-tab" data-toggle="pill" href="#{{ category.slug }}"
-                        role="tab" aria-controls="{{ category }}" aria-selected="true">{{ category }}</a>
+                    <a class="nav-link {% if forloop.first %}active{% endif %}" id="{{ category.slug }}-tab"
+                        data-toggle="pill" href="#{{ category.slug }}" role="tab" aria-controls="{{ category }}"
+                        aria-selected="true">{{ category }}</a>
                 </li>
                 {% endfor %}
             </ul>
             <div class="tab-content" id="pills-tabContent">
                 {% for category in object_list %}
-                <div class="tab-pane fade {% if forloop.first %}active show{% endif %}" id="{{ category.slug }}" role="tabpanel"
-                    aria-labelledby="{{ category.slug }}-tab">
+                <div class="tab-pane fade {% if forloop.first %}active show{% endif %}" id="{{ category.slug }}"
+                    role="tabpanel" aria-labelledby="{{ category.slug }}-tab">
                     <div class="row">
-                    {% for post in category.get_posts %}
+                        {% for post in category.get_posts %}
                         <div class="col-md-4">
                             <div class="blog-entry">
                                 <a href="{{ post.get_absolute_url }}" class="block-20"
@@ -72,17 +74,10 @@
                                     <div class="meta mb-3">
                                         <div><a href="#">{{ post.created|date }}</a></div>
                                         <div><a href="#">{{ post.author }}</a></div>
-                                        {% comment %} <div>
-                                            <a href="#" class="meta-chat"><span class="icon-chat"></span>
-                                                {% for object in object_list %}
-                                                {% get_comment_count for object as comment_count %}
-                                                {{ comment_count }}
-                                                {% endfor %}
-                                                {{ post.comment_count }}
-                                            </a>
-                                        </div> {% endcomment %}
                                         <div>
-                                            <a href="#" class="meta-chat"><span class="icon-eye">{{ post.view_count }}</span></a>
+                                            <a href="#" class="meta-chat">
+                                                <span class="icon-eye">{{ post.view_count }}</span>
+                                            </a>
                                         </div>
                                     </div>
                                     <h3 class="heading">
@@ -91,7 +86,7 @@
                                 </div>
                             </div>
                         </div>
-                    {% endfor %}
+                        {% endfor %}
                     </div>
                 </div>
                 {% endfor %}

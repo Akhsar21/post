@@ -9,11 +9,11 @@
                     <h1 class="mb-4">
                         {% if user.is_staff %}
                         <a href="/admin" class="logo">
-                        {% else %}
-                        <a href="/" class="logo">
-                        {% endif %}
-                            Akhsar
-                        </a>
+                            {% else %}
+                            <a href="/" class="logo">
+                                {% endif %}
+                                Akhsar
+                            </a>
                     </h1>
                     {% with url_name=request.resolver_match.url_name %}
                     <ul>
@@ -55,9 +55,10 @@
                             {% else %}
                             <a href="/" class="colorlib-logo">
                                 {% endif %}
-                                <span class="logo-img" style="background-image: url({% static 'images/icons/icon-192x192.png' %});"></span>
+                                <span class="logo-img"
+                                    style="background-image: url({% static 'images/icons/icon-192x192.png' %});"></span>
                                 Akhsar
-                        </a>
+                            </a>
                     </div>
                     <a href="#" class="js-colorlib-nav-toggle colorlib-nav-toggle"><i></i></a>
                 </div>

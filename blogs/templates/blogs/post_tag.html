@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block head_title %}{{ tags }} Posts Tag List{% endblock %}
-    
+
 
 {% block content %}
 <section class="ftco-section">
@@ -13,14 +13,13 @@
             </div>
         </div>
         <div class="row justify-content-center">
-        {% for post in post_list %}
-        <a href="{{ post.get_absolute_url }}">{{ post }}</a>
-        {{ post.description|truncatewords:30 }}
-        {% empty %}
-        <h3>There are no posts yet.</h3>
-        {% endfor %}
+            {% for post in post_list %}
+            <a href="{{ post.get_absolute_url }}">{{ post }}</a>
+            {{ post.description|truncatewords:30 }}
+            {% empty %}
+            <h3>There are no posts yet.</h3>
+            {% endfor %}
         </div>
     </div>
 </section>
 {% endblock %}
-    

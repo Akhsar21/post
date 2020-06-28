@@ -36,18 +36,22 @@
                         </a>
                         <a href="{% url 'post-delete' slug=post.slug %}" class="text-danger">
                             <span class="icon-trash"></span>
-                        </a> 
+                        </a>
                         {% endif %}
                     </div>
                     <form class="like-form" action="" method="POST" id="{{ post.id }}">
                         {% csrf_token %}
                         <input type="hidden" name="post_id" id="post_id" value="{{ post.id }}">
                         <button class="btn like-btn{{ post.id }}" type="submit">
-                        {% if profile not in post.liked.all %}
-                        <span class=""><ion-icon name="thumbs-up-sharp"></ion-icon> Like</span>
-                        {% else %}
-                        <span class="text-danger"><ion-icon name="thumbs-down-sharp"></ion-icon> Unlike</span>
-                        {% endif %}
+                            {% if profile not in post.liked.all %}
+                            <span class="">
+                                <ion-icon name="thumbs-up-sharp"></ion-icon> Like
+                            </span>
+                            {% else %}
+                            <span class="text-danger">
+                                <ion-icon name="thumbs-down-sharp"></ion-icon> Unlike
+                            </span>
+                            {% endif %}
                         </button>
                     </form>
                 </div>
@@ -86,16 +90,16 @@
 
 
 {% block extra_body %}
-    <script>
-    $(document).ready(function() {
-        $('.like-form').submit(function(e) {
+<script>
+    $(document).ready(function () {
+        $('.like-form').submit(function (e) {
             e.preventDefault()
 
             const post_id = $(this).attr('id')
             const likeText = $(`.like-btn${post_id}`).text()
             const trim = $.trim(likeText)
             const url = $('.like-form').attr('action')
-            
+
             $.ajax({
                 type: 'POST',
                 url: url,
@@ -105,7 +109,7 @@
                 },
                 success: function () {
                     // console.log(data);
-                    
+
                     $.ajax({
                         type: 'GET',
                         url: 'http://127.0.0.1:8000/serialized/',
@@ -113,12 +117,16 @@
                             $.each(response, function (index, element) {
                                 if (post_id == element.id) {
                                     if (trim == 'Like') {
-                                        $(`.like-btn${post_id}`).html(`<span class="text-danger"><ion-icon name="thumbs-down-sharp"></ion-icon> Unlike</span>`)
+                                        $(`.like-btn${post_id}`).html(
+                                            `<span class="text-danger"><ion-icon name="thumbs-down-sharp"></ion-icon> Unlike</span>`
+                                            )
                                     } else if (trim == 'Unlike') {
-                                        $(`.like-btn${post_id}`).html(`<span class=""><ion-icon name="thumbs-up-sharp"></ion-icon> Like</span>`)
+                                        $(`.like-btn${post_id}`).html(
+                                            `<span class=""><ion-icon name="thumbs-up-sharp"></ion-icon> Like</span>`
+                                            )
                                     } else {
                                         console.log('ups');
-                                    } 
+                                    }
                                 }
                             })
                         },
@@ -131,13 +139,8 @@
                 error: function (error) {
                     console.log('error', error);
                 },
-                // complete: function(){ //A function to be called when the request finishes (after success and error callbacks are executed) - from jquery docs
-                //     //do smth if you need
-                //     document.location.reload(); 
-                // }
             })
         })
     })
-    </script>
+</script>
 {% endblock %}
-    
