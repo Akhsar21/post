@@ -44,13 +44,12 @@
                         <input type="hidden" name="post_id" id="post_id" value="{{ post.id }}">
                         <button class="btn like-btn{{ post.id }}" type="submit">
                         {% if profile not in post.liked.all %}
-                        <span class=""><ion-icon name="thumbs-up-outline"></ion-icon> Like</span>
+                        <span class=""><ion-icon name="thumbs-up-sharp"></ion-icon> Like</span>
                         {% else %}
-                        <span class="text-danger"><ion-icon name="thumbs-down-outline"></ion-icon> Unlike</span>
+                        <span class="text-danger"><ion-icon name="thumbs-down-sharp"></ion-icon> Unlike</span>
                         {% endif %}
                         </button>
                     </form>
-                    <a href="{{ post.get_absolute_url }}#disqus_thread" data-disqus-identifier="{{post.id}}">Comments</a>
                 </div>
 
                 <div class="about-author d-flex pt-5">
@@ -114,9 +113,9 @@
                             $.each(response, function (index, element) {
                                 if (post_id == element.id) {
                                     if (trim == 'Like') {
-                                        $(`.like-btn${post_id}`).html(`<span class="text-danger"><ion-icon name="thumbs-down-outline"></ion-icon> Unlike</span>`)
+                                        $(`.like-btn${post_id}`).html(`<span class="text-danger"><ion-icon name="thumbs-down-sharp"></ion-icon> Unlike</span>`)
                                     } else if (trim == 'Unlike') {
-                                        $(`.like-btn${post_id}`).html(`<span class=""><ion-icon name="thumbs-up-outline"></ion-icon> Like</span>`)
+                                        $(`.like-btn${post_id}`).html(`<span class=""><ion-icon name="thumbs-up-sharp"></ion-icon> Like</span>`)
                                     } else {
                                         console.log('ups');
                                     } 

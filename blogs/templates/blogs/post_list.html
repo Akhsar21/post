@@ -1,5 +1,4 @@
 {% extends 'base.html' %}
-{% load comments %}
 
 {% block head_title %}{{ title }}{% endblock %}
 
@@ -31,17 +30,7 @@
                             <div><a href="#">{{ post.created|date }}</a></div>
                             <div><a href="#">{{ post.author }}</a></div>
                             <div>
-                                {% comment %} <a href="#" class="meta-chat"><span class="icon-chat"></span>
-                                    {% for object in object_list %}
-                                    {% get_comment_count for object as comment_count %}
-                                    {{ comment_count }}
-                                    {% endfor %}
-                                    {{ post.comment_count }}
-                                </a> {% endcomment %}
-                                <a href="{{ post.get_absolute_url }}#disqus_thread">Comment</a>
-                            </div>
-                            <div>
-                                <a href="#" class="meta-chat"><span class="icon-eye">{{ post.view_count }}</span></a>
+                                <a href="#" class="text-secondary">{{ post.view_count }} Views</a>
                             </div>
                         </div>
                         <h3 class="heading">
