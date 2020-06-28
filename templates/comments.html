@@ -1,4 +1,4 @@
-{% load static %}
+<!-- {% load static %}
 {% load crispy_forms_tags %}
 {% load comments %}
 {% load comments_xtd %}
@@ -15,58 +15,8 @@
         {% if comment_count %}
             {% render_xtdcomment_tree for object allow_flagging allow_feedback show_feedback %}
         {% endif %}
-        {% comment %} {% for comment in post.get_comments %}
-        <li class="comment">
-            <div class="vcard bio">
-                {% if comment.user.author %}
-                <img src="{{ comment.user.author.avatar.url }}" alt="Image placeholder">
-                {% else %}
-                <img src="{% static 'img/user.svg' %}" alt="...">
-                {% endif %}
-            </div>
-            <div class="comment-body">
-                <h3>{{ comment.user.username|capfirst }}</h3>
-                <div class="meta">{{ comment.timestamp }}</div>
-                <p>{{ comment.content }}</p>
-                <p><a href="#" class="reply">Reply</a></p>
-            </div>
-
-            <ul class="children">
-                {% for reply in comment.replies.all %}
-                <li class="comment">
-                    <div class="vcard bio">
-                        <img src="images/person_1.jpg" alt="Image placeholder">
-                    </div>
-                    <div class="comment-body">
-                        <h3>{{ reply.user.username|capfirst }}</h3>
-                        <div class="meta">{{ comment.timestamp }}</div>
-                        <p>{{ reply.content }}</p>
-                        <p><a href="#" class="reply">Reply</a></p>
-                    </div>
-
-                    {% if request.user.is_authenticated %}
-                    <div class="comment-form-wrap">
-                        <form action="." method="POST">
-                            {% csrf_token %}
-                            <input type="hidden" name="comment_id" value="{{ comment.id }}">
-                            <div class="form-group">
-                                <label for="message">Reply</label>
-                                {{ form|crispy }}
-                            </div>
-                            <div class="form-group">
-                                <input class="btn py-2 px-4 btn-primary" type="submit" value="Post Comment">
-                            </div>
-                        </form>
-                    </div>
-                    {% endif %}
-
-                </li>
-                {% endfor %}
-            </ul>
-        </li>
-        {% endfor %} {% endcomment %}
     </ul>
-    <!-- END comment-list -->
+    END comment-list
     {% comment %} {% if object.allow_comments %} {% endcomment %}
     <div class="comment">
         <h3 class="mb-5">Leave a comment</h3>
@@ -81,29 +31,31 @@
         
     </ul>
     {% endif %}
-    {% comment %} {% if request.user.is_authenticated %}
-    <div class="comment-form-wrap pt-5">
-        <h3 class="mb-5">Leave a comment</h3>
-        <form action="." method="POST">
-            {% csrf_token %}
-            <div class="form-group">
-                <label for="message">Comment</label>
-                {{ form|crispy }}
-            </div>
-            <div class="form-group">
-                <input class="btn py-2 px-4 btn-primary" type="submit" value="Post Comment">
-            </div>
-        </form>
-    </div>
-    {% else %}
-    <a href="{% url 'account_login' %}">Login <span class="icon-sign-in"></span></a> to Comment
-    {% endif %} {% endcomment %}
-</div>
+</div> -->
 
-{% block extra_body %}
+<div id="disqus_thread"></div>
 <script>
-  $(function() {
-    $('[data-toggle="tooltip"]').tooltip({html: true});
-  });
+    // Modify Start
+
+
+    // change yourdomain.in to your domain
+    var disqus_config = function () {
+        this.page.url = "http://127.0.0.1:8000/blog/{{url}}/";
+        this.page.identifier = "{{url}}";
+    };
+
+    // Modify End
+
+    (function () { // DON'T EDIT BELOW THIS LINE
+        var d = document,
+            s = d.createElement('script');
+        s.src = 'https://akhsar.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
 </script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by
+        Disqus.</a></noscript>
+{% block extra_body %}
+
 {% endblock %}

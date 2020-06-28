@@ -17,6 +17,5 @@ urlpatterns = [
     path("category", views.CategoryView.as_view(), name="category-list"),
     path("tag", views.TagView.as_view(), name="tag-list"),
     path('getdata', views.getdata, name='getdata'),
-    path('like/', views.like_unlike_post, name='like-post-view'),
     path('serialized/', views.post_serialized_view, name='serialized-view'),
 ]

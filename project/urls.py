@@ -18,7 +18,6 @@ urlpatterns = [
     path('', include('blogs.urls')),
     path('accounts/', include('allauth.urls')),
     path('ckeditor/', include('ckeditor_uploader.urls')),
-    path('comments/', include('django_comments_xtd.urls')),
     path('', include('pwa.urls')),
     path('profiles/', include('profiles.urls')),
 ]

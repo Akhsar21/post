@@ -7,7 +7,7 @@ ENVIRONMENT = os.getenv('ENVIRONMENT', 'development')
 DEBUG = True
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '-05sgp9!deq=q1nltm@^^2cc+v29i(tyybv3v2t77qi66czazj'
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost').split(',')
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -27,8 +27,7 @@ INSTALLED_APPS = [
     'ckeditor',
     'ckeditor_uploader',
 
-    'django_comments_xtd',
-    'django_comments',
+    'rest_framework',
 
     'pwa',
 
@@ -168,30 +167,11 @@ DEFAULT_FROM_EMAIL = 'akhsarodhe@gmail.com'
 ACCOUNT_EMAIL_SUBJECT_PREFIX = ''
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
-COMMENTS_APP = 'django_comments_xtd'
-
-#  To help obfuscating comments before they are sent for confirmation.
-COMMENTS_XTD_SALT = (b"Timendi causa est nescire. "
-                     b"Aequam memento rebus in arduis servare mentem.")
-COMMENTS_XTD_FROM_EMAIL = "noreply@example.com"
-COMMENTS_XTD_CONTACT_EMAIL = "helpdesk@example.com"
-COMMENTS_XTD_CONFIRM_EMAIL = False
-
-COMMENTS_XTD_MAX_THREAD_LEVEL = 2  # default is 0
-COMMENTS_XTD_LIST_ORDER = ('-thread_id', 'order')  # default is ('thread_id', 'order')
-
-COMMENTS_XTD_APP_MODEL_OPTIONS = {
-    'blogs.post': {
-        'allow_flagging': True,
-        'allow_feedback': True,
-        'show_feedback': True,
-    }
-}
-
 SITE_ID = 1
 
 if ENVIRONMENT == 'production':
     DEBUG = False
+    ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(',')
     SECRET_KEY = os.getenv('SECRET_KEY')
     SESSION_COOKIE_SECURE = True
     SECURE_BROWSER_XSS_FILTER = True

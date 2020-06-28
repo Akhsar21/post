@@ -170,35 +170,6 @@ class PostDeleteView(LoginRequiredMixin, DeleteView):
     # template_name = 'blogs/post_confirm_delete.html'
 
 
-# def like_unlike_post(request):
-#     user = request.user
-#     if request.method == 'POST':
-#         post_id = request.POST.get('post_id')
-#         post_obj = Post.objects.get(id=post_id)
-#         profile = Profile.objects.get(user=user)
-
-#         if profile in post_obj.liked.all():
-#             post_obj.liked.remove(profile)
-#         else:
-#             post_obj.liked.add(profile)
-
-#         like, created = Like.objects.get_or_create(
-#             user=profile, post_id=post_id)
-
-#         if not created:
-#             if like.value == 'like':
-#                 like.value = 'unlike'
-#             else:
-#                 like.value = 'like'
-#         else:
-#             like.value = 'like'
-
-#             post_obj.save()
-#             like.save()
-
-#     # return redirect('post-list')
-#     return HttpResponse()
-
 def post_serialized_view(request):
     data = list(Post.objects.values())
     return JsonResponse(data, safe=False)
