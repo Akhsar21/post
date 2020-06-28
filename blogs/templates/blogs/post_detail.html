@@ -39,18 +39,17 @@
                         </a> 
                         {% endif %}
                     </div>
-                    <form action="." method="POST">
+                    <form class="like-form" action="" method="POST" id="{{ post.id }}">
                         {% csrf_token %}
-                        <input type="hidden" name="post_id" value="{{ post.id }}">
-                        <button class="btn btn-outline-secondary btn-xs " type="submit">
+                        <input type="hidden" name="post_id" id="post_id" value="{{ post.id }}">
+                        <button class="btn like-btn{{ post.id }}" type="submit">
                         {% if profile not in post.liked.all %}
-                        Like
+                        <span class=""><ion-icon name="thumbs-up-outline"></ion-icon> Like</span>
                         {% else %}
-                        Unlike
+                        <span class="text-danger"><ion-icon name="thumbs-down-outline"></ion-icon> Unlike</span>
                         {% endif %}
                         </button>
                     </form>
-                    {{ post.likes_count }}
                 </div>
 
                 <div class="about-author d-flex pt-5">
@@ -84,3 +83,61 @@
     </div>
 </section>
 {% endblock %}
+
+
+{% block extra_body %}
+    <script>
+    $(document).ready(function() {
+        $('.like-form').submit(function(e) {
+            e.preventDefault()
+
+            const post_id = $(this).attr('id')
+            const likeText = $(`.like-btn${post_id}`).text()
+            const trim = $.trim(likeText)
+            const url = $('.like-form').attr('action')
+            
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: {
+                    'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val(),
+                    'post_id': post_id,
+                },
+                success: function () {
+                    // console.log(data);
+                    
+                    $.ajax({
+                        type: 'GET',
+                        url: 'http://127.0.0.1:8000/serialized/',
+                        success: function (response) {
+                            $.each(response, function (index, element) {
+                                if (post_id == element.id) {
+                                    if (trim == 'Like') {
+                                        $(`.like-btn${post_id}`).html(`<span class="text-danger"><ion-icon name="thumbs-down-outline"></ion-icon> Unlike</span>`)
+                                    } else if (trim == 'Unlike') {
+                                        $(`.like-btn${post_id}`).html(`<span class=""><ion-icon name="thumbs-up-outline"></ion-icon> Like</span>`)
+                                    } else {
+                                        console.log('ups');
+                                    } 
+                                }
+                            })
+                        },
+                        error: function (error) {
+                            console.log('error');
+                        }
+                    })
+
+                },
+                error: function (error) {
+                    console.log('error', error);
+                },
+                // complete: function(){ //A function to be called when the request finishes (after success and error callbacks are executed) - from jquery docs
+                //     //do smth if you need
+                //     document.location.reload(); 
+                // }
+            })
+        })
+    })
+    </script>
+{% endblock %}
+    
