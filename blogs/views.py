@@ -1,15 +1,19 @@
+from rest_framework import authentication, permissions
+from rest_framework.response import Response
+from rest_framework.views import APIView
 from django.db.models import Count, Q
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, get_object_or_404, redirect, reverse
-from django.views.generic import View, ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import View, ListView, DetailView, CreateView, UpdateView, DeleteView, RedirectView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core import serializers
 import json
 from django.http import HttpResponse, JsonResponse
+from django.template.loader import render_to_string
 
 from .forms import PostForm
-from .models import Post, Author, PostView, Category, Tag, Like
+from .models import Post, Author, PostView, Category, Tag
 from profiles.models import Profile
 from contacts.forms import EmailSignupForm
 from contacts.models import Signup
@@ -97,35 +101,25 @@ class PostDetailView(DetailView):
 
     def post(self, request, *args, **kwargs):
         user = request.user
-        if request.method == 'POST':
-            post = self.get_object()
-            post_id = request.POST.get('post_id')
-            post_obj = Post.objects.get(id=post_id)
-            profile = Profile.objects.get(user=user)
+        post_id = request.POST.get('id')
 
-            if profile in post_obj.liked.all():
-                post_obj.liked.remove(profile)
-            else:
-                post_obj.liked.add(profile)
+        post = get_object_or_404(Post, id=post_id)
+        is_liked = False
+        if post.likes.filter(id=user.id).exists():
+            post.likes.remove(user)
+            is_liked = False
+        else:
+            post.likes.add(user)
+            is_liked = True
 
-            like, created = Like.objects.get_or_create(
-                user=profile, post_id=post_id)
-
-            if not created:
-                if like.value == 'like':
-                    like.value = 'unlike'
-                else:
-                    like.value = 'like'
-            else:
-                like.value = 'like'
-
-                post_obj.save()
-                like.save()
-
-            # messages.success(self.request, "Thanks for your messages!")
-            return redirect(reverse("post-detail", kwargs={
-                'slug': post.slug
-            }))
+        context = {
+            'post': post,
+            'is_liked': is_liked,
+            'total_likes': post.total_likes(),
+        }
+        if request.is_ajax():
+            html = render_to_string('blogs/like_section.html', context, request=request)
+            return JsonResponse({'form': html})
 
 
 class PostCreateView(LoginRequiredMixin, CreateView):
@@ -168,11 +162,6 @@ class PostDeleteView(LoginRequiredMixin, DeleteView):
     model = Post
     success_url = '/blog'
     # template_name = 'blogs/post_confirm_delete.html'
-
-
-def post_serialized_view(request):
-    data = list(Post.objects.values())
-    return JsonResponse(data, safe=False)
 
 
 class CategoryView(ListView):
