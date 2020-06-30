@@ -39,21 +39,9 @@
                         </a>
                         {% endif %}
                     </div>
-                    <form class="like-form" action="" method="POST" id="{{ post.id }}">
-                        {% csrf_token %}
-                        <input type="hidden" name="post_id" id="post_id" value="{{ post.id }}">
-                        <button class="btn like-btn{{ post.id }}" type="submit">
-                            {% if profile not in post.liked.all %}
-                            <span class="">
-                                <ion-icon name="thumbs-up-sharp"></ion-icon> Like
-                            </span>
-                            {% else %}
-                            <span class="text-danger">
-                                <ion-icon name="thumbs-down-sharp"></ion-icon> Unlike
-                            </span>
-                            {% endif %}
-                        </button>
-                    </form>
+                    <div id="like-section">
+                        {% include 'blogs/like_section.html' %}
+                    </div>
                 </div>
 
                 <div class="about-author d-flex pt-5">
@@ -72,7 +60,7 @@
 
 
                 {% if not post.restrict_comment %}
-                {% include 'blogs/comments.html' %}
+                {% comment %} {% include 'blogs/comments.html' %} {% endcomment %}
                 {% else %}
                 <div class="pt-5 mt-5">
                     <div class="comment text-center">
@@ -91,54 +79,27 @@
 
 {% block extra_body %}
 <script>
-    $(document).ready(function () {
-        $('.like-form').submit(function (e) {
-            e.preventDefault()
-
-            const post_id = $(this).attr('id')
-            const likeText = $(`.like-btn${post_id}`).text()
-            const trim = $.trim(likeText)
+    $(document).ready(function (e) {
+        $(document).on('click', '#like', function (e) {
+            e.preventDefault();
+            const pk = $(this).attr('value')
             const url = $('.like-form').attr('action')
-
             $.ajax({
+
                 type: 'POST',
                 url: url,
                 data: {
-                    'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val(),
-                    'post_id': post_id,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                    'id': pk,
                 },
-                success: function () {
-                    // console.log(data);
-
-                    $.ajax({
-                        type: 'GET',
-                        url: 'http://127.0.0.1:8000/serialized/',
-                        success: function (response) {
-                            $.each(response, function (index, element) {
-                                if (post_id == element.id) {
-                                    if (trim == 'Like') {
-                                        $(`.like-btn${post_id}`).html(
-                                            `<span class="text-danger"><ion-icon name="thumbs-down-sharp"></ion-icon> Unlike</span>`
-                                            )
-                                    } else if (trim == 'Unlike') {
-                                        $(`.like-btn${post_id}`).html(
-                                            `<span class=""><ion-icon name="thumbs-up-sharp"></ion-icon> Like</span>`
-                                            )
-                                    } else {
-                                        console.log('ups');
-                                    }
-                                }
-                            })
-                        },
-                        error: function (error) {
-                            console.log('error');
-                        }
-                    })
-
+                dataType: 'json',
+                success: function (response) {
+                    $('#like-section').html(response['form'])
+                    console.log($('#like-section').html(response['form']));
                 },
-                error: function (error) {
-                    console.log('error', error);
-                },
+                error: function (rs, e) {
+                    console.log(re.responseText);
+                }
             })
         })
     })
