@@ -1,0 +1,16 @@
+{% if request.user.is_authenticated %}
+<form class="like-form ui left labeled button" tabindex="0" action="." method="POST">
+    {% csrf_token %}
+    {% comment %} <input type="hidden" name="post_id" id="post_id" value="{{ post.id }}"> {% endcomment %}
+    <a class="ui basic right pointing label" data-likes='{{ post.likes.count }}'>
+        {{ post.likes.count }}
+    </a>
+    <button type="submit" class="ui button" id="like" name="post_id" value="{{ post.id }}">
+        {% if is_liked %}
+        <i class="heart red icon"></i> Unlike
+        {% else %}
+        <i class="heart icon"></i> Like
+        {% endif %}
+    </button>
+</form>
+{% endif %}
