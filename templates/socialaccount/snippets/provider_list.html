@@ -11,9 +11,14 @@
 </div>
 {% endfor %}
 {% endif %}
-<div class="mx-1">
-  <a title="{{provider.name}}" class="btn btn-social btn-{{provider.id}}"
+{% comment %} <div class="mx-1"> {% endcomment %}
+  <a title="{{provider.name}}" class="ui {{ provider.id }} button"
     href="{% provider_login_url provider.id process=process scope=scope auth_params=auth_params %}">
-    <span class="icon-{{provider.id}}"></span>{{provider.name}}</a>
-</div>
+    <i class="{{ provider.id }} icon"></i>
+    {{ provider.name }}
+  </a>
+  {% comment %} <a title="{{provider.name}}" class="btn btn-social btn-{{provider.id}}"
+    href="{% provider_login_url provider.id process=process scope=scope auth_params=auth_params %}">
+    <span class="icon-{{provider.id}}"></span>{{provider.name}}</a> {% endcomment %}
+{% comment %} </div> {% endcomment %}
 {% endfor %}

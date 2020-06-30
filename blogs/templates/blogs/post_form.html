@@ -18,7 +18,12 @@
                 <form method="POST" action="." enctype="multipart/form-data">
                     {% csrf_token %}
                     {{ form|crispy }}
-                    <button class="btn py-2 px-4 btn-primary" type="submit">Submit</button>
+                    <div class="ui buttons">
+                        <a href="{% url 'post-list' %}" class="ui button active">Cancel</a>
+                        <div class="or"></div>
+                        <button class="ui positive button" type="submit">Submit</button>
+                    </div>
+                    {% comment %} <button class="btn py-2 px-4 btn-primary" type="submit">Submit</button> {% endcomment %}
                 </form>
             </div>
         </div>

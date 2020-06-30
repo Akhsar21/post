@@ -1,11 +1,8 @@
-from rest_framework import authentication, permissions
-from rest_framework.response import Response
-from rest_framework.views import APIView
 from django.db.models import Count, Q
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, get_object_or_404, redirect, reverse
-from django.views.generic import View, ListView, DetailView, CreateView, UpdateView, DeleteView, RedirectView
+from django.views.generic import View, ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core import serializers
 import json

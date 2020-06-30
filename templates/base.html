@@ -8,8 +8,10 @@
 
 <body id="my-scrollbar">
     <div class="page">
-
+        {% if not is_authenticated %}
+        {% else %}
         {% include 'snippets/header.html' %}
+        {% endif %}
 
         {% block content %}
         {% endblock %}
@@ -18,7 +20,10 @@
             <!-- the news will get displayed here from indexedDB in offline mode -->
         </div> {% endcomment %}
 
+        {% if not is_authenticated %}
+        {% else %}
         {% include 'snippets/footer.html' %}
+        {% endif %}
 
     </div>
 

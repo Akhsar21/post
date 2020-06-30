@@ -20,9 +20,9 @@
 
 <link rel="stylesheet" href="{% static 'css/bootstrap-social.css' %}">
 
-<section class="ftco-section">
-    <div class="container mt-5">
-        <div class="row justify-content-center mb-5 pb-5">
+{% comment %} <section class="ftco-section"> {% endcomment %}
+    <div class="ui middle aligned center aligned grid">
+        <div class="column">
             <div class="col-md-7 text-center heading-section">
                 <span>{% trans "Sign In" %}</span>
                 {% get_providers as socialaccount_providers %}
@@ -54,12 +54,12 @@
                 </form>
                 <div class="text-center mt-5">
                     <div class="login-or">{% trans 'or login with' %}</div>
-                    <div class="row justify-content-center mt-5">
+                    <div class="justify-content-center mt-5">
                         {% include "socialaccount/snippets/provider_list.html" with process="login" %}
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</section>
+{% comment %} </section> {% endcomment %}
 {% endblock %}

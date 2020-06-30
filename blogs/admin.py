@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
-from .models import Author, Category, Post, PostView, Tag, Like
+from .models import Author, Category, Post, PostView, Tag
 
 
 @admin.register(Author)
@@ -72,4 +72,4 @@ class CategoryAdmin(admin.ModelAdmin):
 
 
 admin.site.register(PostView)
-admin.site.register(Like)
+# admin.site.register(Like)
