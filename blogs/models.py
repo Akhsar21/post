@@ -35,14 +35,10 @@ class PostView(models.Model):
 
 class Author(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    avatar = models.ImageField(upload_to='avatars')
+    avatar = models.ImageField(default='avatar.png', upload_to='avatars')
 
     def __str__(self):
         return self.user.username
-
-    def delete(self):
-        self.avatar.delete()
-        super().delete()
 
 
 class Category(models.Model):
@@ -116,7 +112,7 @@ class Post(models.Model):
                                   FileExtensionValidator(['png', 'jpg', 'jpeg'])], blank=True)
     created = models.DateTimeField(auto_now_add=True, editable=None)
     updated = models.DateTimeField(auto_now=True, editable=None)
-    liked = models.ManyToManyField(Profile, related_name='likes', blank=True)
+    likes = models.ManyToManyField(User, related_name='likes', blank=True)
     tags = models.ManyToManyField(Tag)
     category = models.ForeignKey(Category,
                                  on_delete=models.SET_NULL, null=True)
@@ -144,39 +140,33 @@ class Post(models.Model):
         super().delete()
 
     def get_absolute_url(self):
-        return reverse('post-detail', kwargs={
-            'slug': self.slug
-        })
+        return reverse('post-detail', kwargs={'slug': self.slug})
 
     def get_update_url(self):
-        return reverse('post-update', kwargs={
-            'slug': self.slug
-        })
+        return reverse('post-update', kwargs={'slug': self.slug})
 
     def get_delete_url(self):
-        return reverse('post-delete', kwargs={
-            'slug': self.slug
-        })
+        return reverse('post-delete', kwargs={'slug': self.slug})
 
-    def likes_count(self):
-        return self.liked.all().count()
+    def total_likes(self):
+        return self.likes.all().count()
 
     @property
     def view_count(self):
         return PostView.objects.filter(post=self).count()
 
 
-class Like(models.Model):
-    user = models.ForeignKey(Profile, on_delete=models.CASCADE)
-    post = models.ForeignKey(Post, on_delete=models.CASCADE)
-    value = models.CharField(max_length=6, choices=LIKE_CHOICES)
-    created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
+# class Like(models.Model):
+#     user = models.ForeignKey(Profile, on_delete=models.CASCADE)
+#     post = models.ForeignKey(Post, on_delete=models.CASCADE)
+#     value = models.CharField(max_length=6, choices=LIKE_CHOICES)
+#     created = models.DateTimeField(auto_now_add=True)
+#     updated = models.DateTimeField(auto_now=True)
 
-    class Meta:
-        ordering = ['-created']
-        verbose_name = 'Like'
-        verbose_name_plural = 'Likes'
+#     class Meta:
+#         ordering = ['-created']
+#         verbose_name = 'Like'
+#         verbose_name_plural = 'Likes'
 
-    def __str__(self):
-        return f"{self.user}-{self.post}-{self.value}"
+#     def __str__(self):
+#         return f"{self.user}-{self.post}-{self.value}"
