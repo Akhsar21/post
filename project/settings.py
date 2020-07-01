@@ -154,20 +154,20 @@ MAILCHIMP_EMAIL_LIST_ID = 'a00a186ddb'
 LOGIN_REDIRECT_URL = "/"
 LOGIN_URL = "/accounts/login"
 ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+# ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 
 # SEND_GRID_API_KEY = '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'
 # https://myaccount.google.com/lesssecureapps
 # https://accounts.google.com/DisplayUnlockCaptcha
 # https://myaccount.google.com/apppasswords
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = '587'
-EMAIL_HOST_USER = 'andiamar121@gmail.com'
-EMAIL_HOST_PASSWORD = 'R!sda1995'
-EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL = 'akhsarodhe@gmail.com'
-ACCOUNT_EMAIL_SUBJECT_PREFIX = ''
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = '587'
+# EMAIL_HOST_USER = 'andiamar121@gmail.com'
+# EMAIL_HOST_PASSWORD = 'R!sda1995'
+# EMAIL_USE_TLS = True
+# DEFAULT_FROM_EMAIL = 'akhsarodhe@gmail.com'
+# ACCOUNT_EMAIL_SUBJECT_PREFIX = ''
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 SITE_ID = 1
 

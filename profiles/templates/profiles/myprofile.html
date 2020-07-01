@@ -11,29 +11,79 @@ my profile
 {% if confirm %}
 <h1>Updated</h1>
 {% endif %}
+<div class="main ui container">
+    <button type="button" class="ui primary button" data-toggle="modal" data-target="#pofileModal">
+        Edit Profile
+    </button>
 
-<form action="" method="post" enctype="multipart/form-data">
-{% csrf_token %}
-{{ form|crispy }}
-<button type="submit">Save</button>
-</form>
+    <!-- Modal -->
+    <div class="modal fade" id="pofileModal" tabindex="-1" aria-labelledby="pofileModalLabel" aria-hidden="true"
+        data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form action="." method="post" enctype="multipart/form-data">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="pofileModalLabel">Modal title</h5>
+                    </div>
+                    <div class="modal-body">
+                        {% csrf_token %}
+                        {{ user_form|crispy }}
+                        {{ profile_form|crispy }}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="ui animated red button" data-dismiss="modal">
+                            <div class="visible content">Close</div>
+                            <div class="hidden content">
+                                <i class="right close icon"></i>
+                            </div>
+                        </button>
+                        <button class="ui animated positive button" type="submit">
+                            <div class="visible content">Submit</div>
+                            <div class="hidden content">
+                                <i class="right check icon"></i>
+                            </div>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
-{{ profile.first_name }} {{ profile.last_name }}
-<br>
-<img src="{{ profile.avatar.url }}" alt="{{ profile.user.username }}">
-<br>
-{{ profile.bio }}
-<br>
-{{ profile.country }}
-<br>
-{{ profile.get_friends_no }}
-<br>
-<ul>
-    {% for friend in profile.get_friends %}
-    <li>{{ friend }}</li>
-    {% endfor %}
-</ul>
-<br>
-<h3>Number of likes</h3>
-<p>{{ profile.get_likes_given_count }}</p>
+    <div class="ui middle card">
+        <div class="content">
+            <div class="header">{{ profile.full_name }}</div>
+            <div class="meta">
+                <span class="right floated time">2 days ago</span>
+                <span class="category">Animals</span>
+            </div>
+            <div class="description">
+                {{ profile.bio }}
+            </div>
+        </div>
+        <div class="extra content">
+            <div class="right floated author">
+                <img class="ui avatar image" src="{{ profile.avatar.url }}"> {{ profile.user.username }}
+            </div>
+        </div>
+    </div>
+
+
+    <br>
+    {{ profile.country }}
+    <br>
+    {{ profile.get_friends_no }}
+    <br>
+    <ul>
+        {% for friend in profile.get_friends %}
+        <li>{{ friend }}</li>
+        {% endfor %}
+    </ul>
+    <br>
+    <h3>Number of likes</h3>
+    {% comment %} <p>{{ profile.get_likes_given_count }}</p> {% endcomment %}
+</div>
+{% endblock %}
+
+
+{% block extra_body %}
 {% endblock %}

@@ -23,19 +23,22 @@ class AuthorAdmin(admin.ModelAdmin):
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
     '''Admin View for Post'''
-
+    fieldsets = (
+        (None, {
+            'fields': ('title', 'author', 'content', 'thumbnail', 'tags', 'category', 'status')
+        }),
+        ('Short descriptions', {
+            'classes': ('wide', 'extrapretty'),
+            'fields': ('description', ),
+        }),
+    )
     list_display = ('title', 'created', 'featured', 'restrict_comment')
     list_filter = ('title', 'created')
     search_fields = ['title']
-    # prepopulated_fields = {'slug': ('title',)}
     view_on_site = True
     list_editable = ('featured', 'restrict_comment')
     autocomplete_fields = ['tags']
-    # exclude = ('author',)
-
-    # def save_model(self, request, obj, form, change):
-    #     obj.author = request.user
-    #     obj.save()
+    date_hierarchy = 'created'
 
     # def view_on_site(self, obj):
     #     url = obj.get_absolute_url()
