@@ -7,6 +7,11 @@ from django.utils.text import slugify
 from .utils import get_random_code
 
 
+def user_directory_path(instance, filename):
+    # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
+    return 'avatars/{0}/{1}'.format(instance.user.username, filename)
+
+
 class Profile(models.Model):
     # first_name = models.CharField(max_length=100, blank=True)
     # last_name = models.CharField(max_length=100, blank=True)
@@ -14,7 +19,8 @@ class Profile(models.Model):
     bio = models.TextField(default="no bio...", max_length=300)
     # email = models.EmailField(max_length=254, blank=True)
     country = models.CharField(max_length=200, blank=True)
-    avatar = models.ImageField(default='avatar.png', upload_to='avatars')
+    avatar = models.ImageField(default='avatar.png',
+                               upload_to=user_directory_path)
     friends = models.ManyToManyField(User, blank=True, related_name='friends')
     slug = models.SlugField(unique=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
@@ -30,7 +36,8 @@ class Profile(models.Model):
     def save(self, *args, **kwargs):
         ex = False
         if self.user.first_name and self.user.last_name:
-            to_slug = slugify(str(self.user.first_name) + " " + str(self.user.last_name))
+            to_slug = slugify(str(self.user.first_name) +
+                              " " + str(self.user.last_name))
             ex = Profile.objects.filter(slug=to_slug).exists()
             while ex:
                 to_slug = slugify(to_slug + " " + str(get_random_code()))

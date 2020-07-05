@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
-from .models import Author, Category, Post, PostView, Tag
+from .models import Author, Category, Post, PostView, Tag, PostLike
 
 
 @admin.register(Author)
@@ -20,6 +20,10 @@ class AuthorAdmin(admin.ModelAdmin):
         )
 
 
+class PostLikeAdmin(admin.TabularInline):
+    model = PostLike
+
+
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
     '''Admin View for Post'''
@@ -35,16 +39,16 @@ class PostAdmin(admin.ModelAdmin):
     list_display = ('title', 'created', 'featured', 'restrict_comment')
     list_filter = ('title', 'created')
     search_fields = ['title']
-    view_on_site = True
+    # view_on_site = True
+    inlines = [PostLikeAdmin]
     list_editable = ('featured', 'restrict_comment')
-    autocomplete_fields = ['tags']
+    readonly_fields = ['post_image', 'slug', ]
+    autocomplete_fields = ['tags', ]
     date_hierarchy = 'created'
 
-    # def view_on_site(self, obj):
-    #     url = obj.get_absolute_url()
-    #     return 'http://127.0.0.1:8000' + url
-
-    readonly_fields = ["post_image", "slug"]
+    def view_on_site(self, obj):
+        url = obj.get_absolute_url()
+        return url
 
     def post_image(self, obj):
         return mark_safe(
@@ -75,4 +79,3 @@ class CategoryAdmin(admin.ModelAdmin):
 
 
 admin.site.register(PostView)
-# admin.site.register(Like)

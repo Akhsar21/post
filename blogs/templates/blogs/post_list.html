@@ -25,6 +25,7 @@
                     <a href="{{ post.get_absolute_url }}" class="block-20"
                         style="background-image: url({{ post.thumbnail.url }})">
                     </a>
+                    <img src="{{ post.thumbnail.url }}" class="img-fluid" alt="as">
                     <div class="text p-4 d-block">
                         <div class="meta mb-3">
                             <div><a href="#">{{ post.created|date }}</a></div>
@@ -36,7 +37,9 @@
                         <h3 class="heading">
                             <a href="{{ post.get_absolute_url }}">{{ post }}</a>
                         </h3>
-                        {{ post.likes_count }} Likes
+                        {% with total=post.total_likes %}
+                        {{ total }} Like{{ total|pluralize }}
+                        {% endwith %}
                     </div>
                 </div>
             </div>

@@ -1,3 +1,6 @@
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 from django.db.models import Count, Q
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -9,11 +12,12 @@ import json
 from django.http import HttpResponse, JsonResponse
 from django.template.loader import render_to_string
 
-from .forms import PostForm
-from .models import Post, Author, PostView, Category, Tag
 from profiles.models import Profile
 from contacts.forms import EmailSignupForm
 from contacts.models import Signup
+from .forms import PostForm
+from .models import Post, Author, PostView, Category, Tag
+from .serializers import PostActionSerializer, PostSerializer
 
 form = EmailSignupForm()
 
@@ -58,13 +62,11 @@ class PostListView(ListView):
     def get_context_data(self, **kwargs):
         category_count = get_category_count()
         most_recent = Post.objects.order_by('-published')[:3]
-        profile = Profile.objects.get(user=self.request.user)
         results = Post.objects.all()
         jsondata = serializers.serialize('json', results)
         context = super().get_context_data(**kwargs)
         context['most_recent'] = most_recent
         context['jsondata'] = jsondata
-        context['profile'] = profile
         context['page_request_var'] = "page"
         context['title'] = "Read Our Blog"
         context['category_count'] = category_count
@@ -96,27 +98,27 @@ class PostDetailView(DetailView):
         context['page_request_var'] = "page"
         return context
 
-    def post(self, request, *args, **kwargs):
-        user = request.user
-        post_id = request.POST.get('id')
+    # def post(self, request, *args, **kwargs):
+    #     user = request.user
+    #     post_id = request.POST.get('id')
 
-        post = get_object_or_404(Post, id=post_id)
-        is_liked = False
-        if post.likes.filter(id=user.id).exists():
-            post.likes.remove(user)
-            is_liked = False
-        else:
-            post.likes.add(user)
-            is_liked = True
+    #     post = get_object_or_404(Post, id=post_id)
+    #     is_liked = False
+    #     if post.likes.filter(id=user.id).exists():
+    #         post.likes.remove(user)
+    #         is_liked = False
+    #     else:
+    #         post.likes.add(user)
+    #         is_liked = True
 
-        context = {
-            'post': post,
-            'is_liked': is_liked,
-            'total_likes': post.total_likes(),
-        }
-        if request.is_ajax():
-            html = render_to_string('blogs/like_section.html', context, request=request)
-            return JsonResponse({'form': html})
+    #     context = {
+    #         'post': post,
+    #         'is_liked': is_liked,
+    #         'total_likes': post.total_likes(),
+    #     }
+    #     if request.is_ajax():
+    #         html = render_to_string('blogs/like_section.html', context, request=request)
+    #         return JsonResponse({'form': html})
 
 
 class PostCreateView(LoginRequiredMixin, CreateView):
@@ -201,3 +203,29 @@ def getdata(request):
     results = Post.objects.all()
     jsondata = serializers.serialize('json', results)
     return HttpResponse(jsondata)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def post_action_view(request, *args, **kwargs):
+    # print(request.POST, request.data)
+    serializer = PostActionSerializer(data=request.data)
+    if serializer.is_valid(raise_exception=True):
+        data = serializer.validated_data
+        post_id = data.get("id")
+        action = data.get("action")
+
+        qs = Post.objects.filter(id=post_id)
+        if not qs.exists():
+            return Response({}, status=404)
+        obj = qs.first()
+        if action == "like":
+            obj.likes.add(request.user)
+            serializer = PostSerializer(obj)
+            return Response(serializer.data, status=200)
+        elif action == "unlike":
+            obj.likes.remove(request.user)
+        elif action == "repost":
+            # Todo:
+            pass
+    return Response({}, status=200)
