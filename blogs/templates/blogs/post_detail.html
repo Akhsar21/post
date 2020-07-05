@@ -40,7 +40,13 @@
                         {% endif %}
                     </div>
                     <div id="like-section">
-                        {% include 'blogs/like_section.html' %}
+                        <!-- {% include 'blogs/like_section.html' %} -->
+                        <button class="ui button"
+                            onclick="handlePostActionBtn('{{ post.id }}', '{{ post.likes.count }}','like')">{{ post.likes.count }}
+                            Likes</button>
+                        <button class="ui red button"
+                            onclick="handlePostActionBtn('{{ post.id }}', '{{ post.likes.count }}','unlike')">
+                            Unlike</button>
                     </div>
                 </div>
 
@@ -78,30 +84,93 @@
 
 
 {% block extra_body %}
-<script>
-    $(document).ready(function (e) {
-        $(document).on('click', '#like', function (e) {
-            e.preventDefault();
-            const pk = $(this).attr('value')
-            const url = $('.like-form').attr('action')
-            $.ajax({
 
-                type: 'POST',
-                url: url,
-                data: {
-                    'csrfmiddlewaretoken': '{{ csrf_token }}',
-                    'id': pk,
-                },
-                dataType: 'json',
-                success: function (response) {
-                    $('#like-section').html(response['form'])
-                    console.log($('#like-section').html(response['form']));
-                },
-                error: function (rs, e) {
-                    console.log(re.responseText);
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-AMS_HTML"></script>
+<script>
+    var pres = document.querySelectorAll("pre>code");
+    for (var i = 0; i < pres.length; i++) {
+        hljs.highlightBlock(pres[i]);
+    }
+    // add HighlightJS-badge (options are optional)
+    var options = { // optional
+        // base content CSS selector that is searched for snippets
+        contentSelector: "body",
+
+        loadDelay: 0,
+
+        // CSS class(es) used to render the copy icon.
+        copyIconClass: "copy icon",
+        // CSS class(es) used to render the done icon.
+        checkIconClass: "check icon green",
+
+    };
+    window.highlightJsBadge(options);
+
+
+
+    //    $(document).ready(function (e) {
+    //        $(document).on('click', '#like', function (e) {
+    //            e.preventDefault();
+    //            const pk = $(this).attr('value')
+    //            const url = $('.like-form').attr('action')
+    //            $.ajax({
+    //                type: 'POST',
+    //                url: url,
+    //                data: {
+    //                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+    //                    'id': pk,
+    //                },
+    //                dataType: 'json',
+    //                success: function (response) {
+    //                    $('#like-section').html(response['form'])
+    //                    console.log($('#like-section').html(response['form']));
+    //                },
+    //                error: function (rs, e) {
+    //                    console.log(re.responseText);
+    //                }
+    //            })
+    //        })
+    //    })
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
                 }
-            })
+            }
+        }
+        return cookieValue;
+    }
+    const csrftoken = getCookie('csrftoken');
+
+    function handlePostActionBtn(post_id, currentCount, action) {
+        console.log(post_id, currentCount)
+        const url = "/api/posts/action"
+        const method = "POST"
+        const data = JSON.stringify({
+            id: post_id,
+            action: action
         })
-    })
+        const xhr = new XMLHttpRequest();
+        const csrftoken = getCookie('csrftoken');
+        xhr.open(method, url)
+        xhr.setRequestHeader("Content-Type", "application/json")
+        xhr.setRequestHeader("HTTP_X_REQUESTED_WITH", "XMLHttpRequest")
+        xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest")
+        xhr.setRequestHeader("X-CSRFToken", csrftoken)
+        xhr.onload = function () {
+            console.log(xhr.status, xhr.response);
+        }
+        // console.log(xhr.send(data));
+
+        xhr.send(data)
+        return
+    }
 </script>
 {% endblock %}
