@@ -1,3 +1,4 @@
+from django.utils.translation import gettext as _
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.core.validators import FileExtensionValidator
@@ -98,13 +99,13 @@ class PostLike(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
-    # class Meta:
-    #     ordering = ['-created']
-    #     verbose_name = 'Like'
-    #     verbose_name_plural = 'Likes'
+    class Meta:
+        ordering = ['-created']
+        verbose_name = 'Like'
+        verbose_name_plural = 'Likes'
 
-#     def __str__(self):
-#         return f"{self.user}-{self.post}-{self.value}"
+    # def __str__(self):
+    #     return self.user.username
 
 
 class PublishedManager(models.Manager):
@@ -116,7 +117,7 @@ class Post(models.Model):
     objects = models.Manager()  # The default manager.
     published = PublishedManager()  # Our custom manager.
 
-    title = models.CharField(max_length=100)
+    title = models.CharField(_("title"), max_length=100)
     slug = models.SlugField(unique=True, blank=True, null=True)
     author = models.ForeignKey(Author,
                                on_delete=models.CASCADE, blank=True, null=True)
@@ -125,7 +126,7 @@ class Post(models.Model):
     status = models.CharField(max_length=1,
                               choices=STATUS_CHOICES, default='D')
     thumbnail = models.ImageField(upload_to='posts/%Y/%m/%d', validators=[
-                                 FileExtensionValidator(['png', 'jpg', 'jpeg'])], blank=True)
+        FileExtensionValidator(['png', 'jpg', 'jpeg'])], blank=True)
     created = models.DateTimeField(auto_now_add=True, editable=None)
     updated = models.DateTimeField(auto_now=True, editable=None)
     likes = models.ManyToManyField(User,

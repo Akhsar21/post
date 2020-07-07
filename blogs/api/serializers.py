@@ -1,8 +1,9 @@
 from django.conf import settings
 from rest_framework import serializers
-from .models import Post
+from blogs.models import Post
 
 POST_ACTION_OPTION = settings.POST_ACTION_OPTION
+
 
 class PostActionSerializer(serializers.Serializer):
     id = serializers.IntegerField()
@@ -11,14 +12,18 @@ class PostActionSerializer(serializers.Serializer):
     def validate_action(self, value):
         value = value.lower().strip()
         if not value in POST_ACTION_OPTION:
-            raise serializers.ValidationError("This is not a valid action for posts")
+            raise serializers.ValidationError(
+                "This is not a valid action for posts")
         return value
+
 
 class PostSerializer(serializers.ModelSerializer):
     likes = serializers.SerializerMethodField(read_only=True)
+
     class Meta:
         model = Post
-        fields = ['id', 'content', 'likes']
+        fields = ['id', 'content', 'likes', 'title',
+                  'content', 'thumbnail', 'created']
 
     def get_likes(self, obj):
         return obj.likes.count()

@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="ui center aligned grid">
+    <div>
+        <h1>Correlation: {{ corr }}</h1>
+        {% if graph %}
+        <img src="data:image/png; base64, {{ graph|safe }}" alt="">
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

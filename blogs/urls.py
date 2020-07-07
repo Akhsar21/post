@@ -19,5 +19,4 @@ urlpatterns = [
     path('getdata', views.getdata, name='getdata'),
     # path('serialized/', views.post_serialized_view, name='serialized-view'),
     # path('blog/<slug>/like/', views.PostLikeToggle.as_view(), name='like-toggle'),
-    path('api/posts/action', views.post_action_view, name='api-action'),
 ]

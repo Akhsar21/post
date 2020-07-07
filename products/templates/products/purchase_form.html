@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="ui container">
+    <h1>Add</h1>
+    <form class="ui form" action="{% url 'add-purchase-view' %}" method="post">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <input class="ui positive button" type="submit" value="Add sales data">
+    </form>
+</div>
+{% endblock %}

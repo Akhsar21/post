@@ -21,3 +21,6 @@ splash:
   - "/static/images/icons/splash-2048x2732.png",
 
 - #toggle onclick->showHide();
+
+## django-admin makemessages -l id -i env
+- django-admin compilemessages

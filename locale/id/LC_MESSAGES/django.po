@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-03 00:56+0800\n"
+"POT-Creation-Date: 2020-07-05 16:41+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,6 +18,18 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
+#: .\blogs\views.py:39
+msgid "This is the results for your search"
+msgstr "Ini adalah hasil untuk pencarian Anda"
+
+#: .\blogs\views.py:132
+msgid "Post has been created!"
+msgstr "Post telah dibuat!"
+
+#: .\blogs\views.py:150
+msgid "Post has been updated!"
+msgstr "Post telah diperbarui!"
+
 #: .\profiles\views.py:26
 msgid "Your profile was successfully updated!"
 msgstr "Profil Anda berhasil diperbarui!"
@@ -25,6 +37,14 @@ msgstr "Profil Anda berhasil diperbarui!"
 #: .\profiles\views.py:29
 msgid "Please correct the error below."
 msgstr "Harap perbaiki kesalahan di bawah ini."
+
+#: .\project\settings.py:97
+msgid "Indonesian"
+msgstr "Bahasa Indonesia"
+
+#: .\project\settings.py:98
+msgid "English"
+msgstr "Inggris"
 
 #: .\templates\account\account_inactive.html:5
 #: .\templates\account\account_inactive.html:12
@@ -80,7 +100,10 @@ msgstr "Peringatan"
 msgid ""
 "You currently do not have any e-mail address set up. You should really add "
 "an e-mail address so you can receive notifications, reset your password, etc."
-msgstr "Saat ini Anda tidak memiliki alamat email. Anda harus benar-benar menambahkan alamat email sehingga Anda dapat menerima pemberitahuan, mengatur ulang kata sandi, dll."
+msgstr ""
+"Saat ini Anda tidak memiliki alamat email. Anda harus benar-benar "
+"menambahkan alamat email sehingga Anda dapat menerima pemberitahuan, "
+"mengatur ulang kata sandi, dll."
 
 #: .\templates\account\email.html:52
 msgid "Add E-mail Address"
@@ -103,14 +126,20 @@ msgid ""
 "as an e-mail address to connect their account.\n"
 "\n"
 "To confirm this is correct, go to <a href=\"%(activate_url)s\">click</a>\n"
-msgstr "Halo dari %(site_name)s!\n Anda menerima email ini karena pengguna %(user_display)s telah memberikan alamat email Anda untuk menghubungkan akun mereka.\n Untuk mengonfirmasi ini benar, buka %(activate_url)s\n"
+msgstr ""
+"Halo dari %(site_name)s!\n"
+" Anda menerima email ini karena pengguna %(user_display)s telah memberikan "
+"alamat email Anda untuk menghubungkan akun mereka.\n"
+" Untuk mengonfirmasi ini benar, buka %(activate_url)s\n"
 
 #: .\templates\account\email\email_confirmation_message.txt:12
 #, python-format
 msgid ""
 "Thank you from %(site_name)s!\n"
 "%(site_domain)s"
-msgstr "Terima kasih dari %(site_name)s!\n %(site_domain)s"
+msgstr ""
+"Terima kasih dari %(site_name)s!\n"
+" %(site_domain)s"
 
 #: .\templates\account\email\email_confirmation_subject.txt:3
 msgid "Please Confirm Your E-mail Address"
@@ -125,7 +154,13 @@ msgid ""
 "password for your user account.\n"
 "It can be safely ignored if you did not request a password reset. Click the "
 "link below to reset your password."
-msgstr "Halo dari %(site_name)s!\n Anda menerima email ini karena Anda atau orang lain telah meminta kata sandi untuk akun Anda.\n Itu bisa diabaikan dengan aman jika Anda tidak meminta setel ulang kata sandi.\n Klik tautan di bawah untuk mengatur ulang kata sandi Anda."
+msgstr ""
+"Halo dari %(site_name)s!\n"
+" Anda menerima email ini karena Anda atau orang lain telah meminta kata "
+"sandi untuk akun Anda.\n"
+" Itu bisa diabaikan dengan aman jika Anda tidak meminta setel ulang kata "
+"sandi.\n"
+" Klik tautan di bawah untuk mengatur ulang kata sandi Anda."
 
 #: .\templates\account\email\password_reset_key_message.txt:10
 #, python-format
@@ -137,7 +172,9 @@ msgstr "Jika Anda lupa, nama pengguna Anda adalah %(username)s."
 msgid ""
 "Thank you for using %(site_name)s!\n"
 "%(site_domain)s"
-msgstr "Terima kasih telah menggunakan %(site_name)s!\n %(site_domain)s"
+msgstr ""
+"Terima kasih telah menggunakan %(site_name)s!\n"
+" %(site_domain)s"
 
 #: .\templates\account\email\password_reset_key_subject.txt:3
 msgid "Password Reset E-mail"
@@ -155,7 +192,9 @@ msgid ""
 "                    <a href=\"mailto:%(email)s\">%(email)s</a> is an e-mail "
 "address for user\n"
 "                    %(user_display)s."
-msgstr "Harap konfirmasikan bahwa <a href=\"mailto:%(email)s\">%(email)s</a> adalah alamat email untuk penggunaan %(user_display)s."
+msgstr ""
+"Harap konfirmasikan bahwa <a href=\"mailto:%(email)s\">%(email)s</a> adalah "
+"alamat email untuk penggunaan %(user_display)s."
 
 #: .\templates\account\email_confirm.html:26
 msgid "Confirm"
@@ -167,7 +206,9 @@ msgid ""
 "This e-mail confirmation link expired or is invalid. Please <a\n"
 "                        href=\"%(email_url)s\">issue a new\n"
 "                        e-mail confirmation request</a>."
-msgstr "Tautan konfirmasi email ini kedaluwarsa atau tidak valid. Silakan <a href=\"%(email_url)s\">berikan permintaan konfirmasi e-mail baru</a>."
+msgstr ""
+"Tautan konfirmasi email ini kedaluwarsa atau tidak valid. Silakan <a href="
+"\"%(email_url)s\">berikan permintaan konfirmasi e-mail baru</a>."
 
 #: .\templates\account\login.html:8 .\templates\account\login.html:28
 #: .\templates\account\login.html:53
@@ -181,14 +222,19 @@ msgid ""
 "                    of your existing third party accounts. or,\n"
 "                    <a href=\"%(signup_url)s\">sign up</a>\n"
 "                    for a %(site_name)s account and sign in below:"
-msgstr "harap masuk dengan salah satu akun pihak ketiga Anda. atau, <a href=\"%(signup_url)s\">daftar</a>\n untuk akun %(site_name)s dan masuk di bawah ini:"
+msgstr ""
+"harap masuk dengan salah satu akun pihak ketiga Anda. atau, <a href="
+"\"%(signup_url)s\">daftar</a>\n"
+" untuk akun %(site_name)s dan masuk di bawah ini:"
 
 #: .\templates\account\login.html:40
 #, python-format
 msgid ""
 "if you have not created an account yet, then please\n"
 "                    <a href=\"%(signup_url)s\">sign up</a> first."
-msgstr "jika Anda belum mempunyai akun, silakan <a href=\"%(signup_url)s\">daftar</a> terlebih dahulu."
+msgstr ""
+"jika Anda belum mempunyai akun, silakan <a href=\"%(signup_url)s\">daftar</"
+"a> terlebih dahulu."
 
 #: .\templates\account\login.html:54
 msgid "Forgot Password?"
@@ -273,7 +319,9 @@ msgstr "Setel Ulang Kata Sandi"
 msgid ""
 "Forgotten your password? Enter your e-mail address below, and we'll send you "
 "an e-mail allowing you to reset it."
-msgstr "Lupa kata sandi Anda? Masukkan alamat email Anda di bawah ini, dan kami akan mengirimi email yang memungkinkan Anda untuk meresetnya."
+msgstr ""
+"Lupa kata sandi Anda? Masukkan alamat email Anda di bawah ini, dan kami akan "
+"mengirimi email yang memungkinkan Anda untuk meresetnya."
 
 #: .\templates\account\password_reset.html:26
 msgid "Reset My Password"
@@ -288,7 +336,9 @@ msgid ""
 "We have sent you an e-mail. Please contact us if you do not receive it "
 "within a few\n"
 "                    minutes."
-msgstr "Kami telah mengirimi Anda email. Silakan hubungi kami jika Anda tidak menerimanya dalam beberapa menit."
+msgstr ""
+"Kami telah mengirimi Anda email. Silakan hubungi kami jika Anda tidak "
+"menerimanya dalam beberapa menit."
 
 #: .\templates\account\password_reset_from_key.html:12
 msgid "Bad Token"
@@ -301,7 +351,10 @@ msgid ""
 "used.\n"
 "                            Please request a <a href=\"%(passwd_reset_url)s"
 "\">new password reset</a>."
-msgstr "Tautan untuk setel ulang kata sandi tidak valid, mungkin karena sudah digunakan. Silakan <a href=\"%(passwd_reset_url)s\">setel ulang kata sandi baru</a>."
+msgstr ""
+"Tautan untuk setel ulang kata sandi tidak valid, mungkin karena sudah "
+"digunakan. Silakan <a href=\"%(passwd_reset_url)s\">setel ulang kata sandi "
+"baru</a>."
 
 #: .\templates\account\password_reset_from_key.html:26
 msgid "change password"
@@ -366,7 +419,10 @@ msgid ""
 "finalize\n"
 "                    the signup process. Please contact us if you do not "
 "receive it within a few minutes."
-msgstr "Kami telah mengirim email verifikasi. Ikuti tautan yang disediakan untuk selesaikan proses pendaftaran. Silakan hubungi kami jika dalam beberapa menit Anda tidak menerimanya."
+msgstr ""
+"Kami telah mengirim email verifikasi. Ikuti tautan yang disediakan untuk "
+"selesaikan proses pendaftaran. Silakan hubungi kami jika dalam beberapa "
+"menit Anda tidak menerimanya."
 
 #: .\templates\account\verified_email_required.html:19
 msgid ""
@@ -374,7 +430,10 @@ msgid ""
 "                you are who you claim to be. For this purpose, we require "
 "that you\n"
 "                verify ownership of your e-mail address. "
-msgstr "Bagian situs ini mengharuskan kami untuk memverifikasi siapa Anda.\n Untuk tujuan ini, kami mengharuskan Anda memverifikasi kepemilikan alamat email Anda"
+msgstr ""
+"Bagian situs ini mengharuskan kami untuk memverifikasi siapa Anda.\n"
+" Untuk tujuan ini, kami mengharuskan Anda memverifikasi kepemilikan alamat "
+"email Anda"
 
 #: .\templates\account\verified_email_required.html:23
 msgid ""
@@ -382,7 +441,10 @@ msgid ""
 "                verification. Please click on the link inside this e-mail. "
 "Please\n"
 "                contact us if you do not receive it within a few minutes."
-msgstr "Kami telah mengirim email verifikasi kepada Anda.\n Silakan klik tautan di dalam email. Hubungi kami jika dalam beberapa menit Anda tidak menerimanya."
+msgstr ""
+"Kami telah mengirim email verifikasi kepada Anda.\n"
+" Silakan klik tautan di dalam email. Hubungi kami jika dalam beberapa menit "
+"Anda tidak menerimanya."
 
 #: .\templates\account\verified_email_required.html:27
 #, python-format
@@ -390,7 +452,9 @@ msgid ""
 "<strong>Note:</strong> you can still <a href=\"%(email_url)s\">change your e-"
 "mail\n"
 "                    address</a>."
-msgstr "<strong>Catatan:</strong> Anda masih dapat <a href=\"%(email_url)s\">mengubah alamat email Anda</a>."
+msgstr ""
+"<strong>Catatan:</strong> Anda masih dapat <a href=\"%(email_url)s"
+"\">mengubah alamat email Anda</a>."
 
 #: .\templates\contact.html:12
 msgid "Contact"
@@ -412,7 +476,8 @@ msgstr "Kegagalan Masuk Jaringan Sosial"
 #: .\templates\socialaccount\authentication_error.html:17
 msgid ""
 "An error occurred while attempting to login via your social network account."
-msgstr "Terjadi kesalahan saat mencoba masuk melalui akun jejaring sosial Anda."
+msgstr ""
+"Terjadi kesalahan saat mencoba masuk melalui akun jejaring sosial Anda."
 
 #: .\templates\socialaccount\connections.html:5
 #: .\templates\socialaccount\connections.html:12
@@ -423,12 +488,15 @@ msgstr "Koneksi Akun"
 msgid ""
 "You can sign in to your account using any of the following third party "
 "accounts:"
-msgstr "Anda dapat masuk ke akun Anda menggunakan salah satu akun pihak ketiga berikut:"
+msgstr ""
+"Anda dapat masuk ke akun Anda menggunakan salah satu akun pihak ketiga "
+"berikut:"
 
 #: .\templates\socialaccount\connections.html:42
 msgid ""
 "You currently have no social network accounts connected to this account."
-msgstr "Saat ini Anda tidak memiliki akun jejaring sosial yang terhubung ke akun ini."
+msgstr ""
+"Saat ini Anda tidak memiliki akun jejaring sosial yang terhubung ke akun ini."
 
 #: .\templates\socialaccount\connections.html:44
 msgid "Add a 3rd Party Account"
@@ -445,7 +513,10 @@ msgid ""
 "You decided to cancel logging in to our site using one of your existing "
 "accounts. If this was a mistake, please proceed to <a href=\"%(login_url)s"
 "\">sign in</a>."
-msgstr "Anda memutuskan untuk membatalkan masuk ke situs kami menggunakan salah satu akun Anda. Jika ini kesalahan, lanjutkan untuk <a href=\"%(login_url)s\">masuk</a>."
+msgstr ""
+"Anda memutuskan untuk membatalkan masuk ke situs kami menggunakan salah satu "
+"akun Anda. Jika ini kesalahan, lanjutkan untuk <a href=\"%(login_url)s"
+"\">masuk</a>."
 
 #: .\templates\socialaccount\messages\account_connected.txt:2
 msgid "The social account has been connected."
@@ -465,4 +536,7 @@ msgid ""
 "You are about to use your %(provider_name)s account to login to\n"
 "              %(site_name)s. As a final step, please complete the following "
 "form:"
-msgstr "Anda akan menggunakan akun %(provider_name)s Anda untuk masuk ke %(site_name)s.\n Sebagai langkah terakhir, harap lengkapi formulir berikut:"
+msgstr ""
+"Anda akan menggunakan akun %(provider_name)s Anda untuk masuk ke "
+"%(site_name)s.\n"
+" Sebagai langkah terakhir, harap lengkapi formulir berikut:"

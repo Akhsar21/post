@@ -22,29 +22,39 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.sitemaps',
 
+    'crispy_forms',
+    'ckeditor',
+    'ckeditor_uploader',
+
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.twitter',
     'allauth.socialaccount.providers.facebook',
-
-    'crispy_forms',
-    'ckeditor',
-    'ckeditor_uploader',
+    'dj_rest_auth.registration',
 
     'rest_framework',
+    'rest_framework.authtoken',
+
+    'dj_rest_auth',
 
     'pwa',
 
     'blogs',
     'contacts',
     'core',
+    'customers',
+    'csvs',
     'profiles',
+    'products',
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
     ]

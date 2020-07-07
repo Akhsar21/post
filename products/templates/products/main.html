@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="ui container">
+    <!-- Modal -->
+    <div class="modal fade" id="seeModal" tabindex="-1" aria-labelledby="seeModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form action="." method="post" enctype="multipart/form-data">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="seeModalLabel">Price Data</h5>
+                    </div>
+                    <div class="modal-body">
+                        <ul>
+                            <li><strong>Count: </strong>{{ price.count }}</li>
+                            <li><strong>Mean: </strong>{{ price.mean|floatformat }}</li>
+                            <li><strong>Median: </strong>{{ price.median }}</li>
+                            <li><strong>Min: </strong>{{ price.min }}</li>
+                            <li><strong>Max: </strong>{{ price.max }}</li>
+                            <li><strong>Std dev: </strong>{{ price.std|floatformat }}</li>
+                        </ul>
+                    </div>
+                    <div class="modal-footer">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="block-center">
+            {% if error_message %}
+            {{ error_message }}
+            {% endif %}
+            {% if request.POST %}
+            {% if graph %}
+            <img src="data:image/png;base64, {{ graph|safe }}" alt="">
+            {% endif %}
+            {% endif %}
+        </div>
+        <form class="ui form" action="" method="post">
+            {% csrf_token %}
+            <div class="field">
+                <label for="">Choose a chart type:</label>
+                <div class="ui selection dropdown">
+                    <input type="hidden" name="sales">
+                    <i class="dropdown icon"></i>
+                    <div class="default text">----</div>
+                    <div class="menu">
+                        <div class="item" value="bar">Bar plot</div>
+                        <div class="item" value="line">Line plot</div>
+                        <div class="item" value="count">Count plot</div>
+                    </div>
+                </div>
+            </div>
+            <div class="field">
+                <div class="two fields">
+                    <div class="field">
+                        <label>Date from:</label>
+                        <input type="date" name="date_from">
+                    </div>
+                    <div class="field">
+                        <label>Date to:</label>
+                        <input type="date" name="date_to">
+                    </div>
+                </div>
+            </div>
+            <div class="block-center">
+                <input class="ui primary button" type="submit" value="Select">
+                <button type="button" class="ui secondary button" data-toggle="modal" data-target="#seeModal">See
+                    summary</button>
+                <a href="{% url 'add-purchase-view' %}" class="ui positive button">Add records</a>
+            </div>
+        </form>
+        {% comment %} <button class="ui secondary button" id="modal-btn">See sumary</button> {% endcomment %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_body %}
+<script>
+    $('#modal-btn').click(function () {
+        $('.ui.modal').modal('show');
+    })
+</script>
+{% endblock %}

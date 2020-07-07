@@ -1,6 +1,4 @@
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from django.utils.translation import gettext as _
 from django.db.models import Count, Q
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -12,12 +10,10 @@ import json
 from django.http import HttpResponse, JsonResponse
 from django.template.loader import render_to_string
 
-from profiles.models import Profile
 from contacts.forms import EmailSignupForm
 from contacts.models import Signup
 from .forms import PostForm
 from .models import Post, Author, PostView, Category, Tag
-from .serializers import PostActionSerializer, PostSerializer
 
 form = EmailSignupForm()
 
@@ -40,7 +36,7 @@ class SearchView(View):
             ).distinct()
         context = {
             'queryset': queryset,
-            'title': "This is the results for your search"
+            'title': _("This is the results for your search")
         }
         return render(request, 'search_results.html', context)
 
@@ -68,7 +64,7 @@ class PostListView(ListView):
         context['most_recent'] = most_recent
         context['jsondata'] = jsondata
         context['page_request_var'] = "page"
-        context['title'] = "Read Our Blog"
+        context['title'] = _("Read Our Blog")
         context['category_count'] = category_count
         context['form'] = self.form
         return context
@@ -90,11 +86,9 @@ class PostDetailView(DetailView):
     def get_context_data(self, **kwargs):
         category_count = get_category_count()
         most_recent = Post.objects.order_by('-published')[:3]
-        profile = Profile.objects.get(user=self.request.user)
         context = super().get_context_data(**kwargs)
         context['category_count'] = category_count
         context['most_recent'] = most_recent
-        context['profile'] = profile
         context['page_request_var'] = "page"
         return context
 
@@ -127,13 +121,13 @@ class PostCreateView(LoginRequiredMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Create'
+        context['title'] = _("Create")
         return context
 
     def form_valid(self, form):
         form.instance.author = get_author(self.request.user)
         form.save()
-        messages.success(self.request, "Post has been created!")
+        messages.success(self.request, _("Post created successfully!"))
         return redirect(reverse("post-detail", kwargs={
             'slug': form.instance.slug
         }))
@@ -145,13 +139,13 @@ class PostUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Update'
+        context['title'] = _("Update")
         return context
 
     def form_valid(self, form):
         form.instance.author = get_author(self.request.user)
         form.save()
-        messages.success(self.request, "Post has been updated!")
+        messages.success(self.request, _("Post updated successfully!"))
         return redirect(reverse("post-detail", kwargs={
             'slug': form.instance.slug
         }))
@@ -203,29 +197,3 @@ def getdata(request):
     results = Post.objects.all()
     jsondata = serializers.serialize('json', results)
     return HttpResponse(jsondata)
-
-
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
-def post_action_view(request, *args, **kwargs):
-    # print(request.POST, request.data)
-    serializer = PostActionSerializer(data=request.data)
-    if serializer.is_valid(raise_exception=True):
-        data = serializer.validated_data
-        post_id = data.get("id")
-        action = data.get("action")
-
-        qs = Post.objects.filter(id=post_id)
-        if not qs.exists():
-            return Response({}, status=404)
-        obj = qs.first()
-        if action == "like":
-            obj.likes.add(request.user)
-            serializer = PostSerializer(obj)
-            return Response(serializer.data, status=200)
-        elif action == "unlike":
-            obj.likes.remove(request.user)
-        elif action == "repost":
-            # Todo:
-            pass
-    return Response({}, status=200)
