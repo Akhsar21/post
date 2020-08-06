@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block head_title %}
+my profile
+{% endblock %}
+
+{% block content %}
+{% if is_empty %}
+<h1>No profiles to interact with</h1>
+{% endif %}
+
+
+{% for obj in object_list %}
+<div class="ui segment">
+    <div class="ui grid">
+        <div class="row">
+            <div class="three wide column">
+                <img src="{{ obj.avatar.url }}" alt="{{ obj.user }}" class="ui small circular image">
+            </div>
+            <div class="thirteen wide column">
+                <h3>{{ obj.user }}</h3>
+                <p>{{ obj.bio }}</p>
+                <button class="ui primary button">See profile</button>
+            </div>
+            <form action="" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="profile_pk" value={{obj.pk}}>
+
+                {% if obj.user not in rel_receiver and obj.user not in rel_sender %}
+                <button type="submit" class="ui positive basic button">
+                    <i class="plus square icon"></i>Add to friends
+                </button>
+                {% endif %}
+            </form>
+            {% if obj.user in rel_receiver and request.user not in obj.friends.all %}
+            <button class="ui disabled button">
+                <i class="user icon"></i>Waiting for approval
+            </button>
+            {% endif %}
+            <form action="" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="profile_pk" value={{obj.pk}}>
+
+                {% if request.user in obj.friends.all %}
+                <button type="submit" class="ui negative basic button">
+                    <i class="minus square icon"></i>Remove from friends
+                </button>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+{% endblock %}

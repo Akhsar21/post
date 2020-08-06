@@ -112,7 +112,7 @@
                 <h2>Checkout a few of my works</h2>
             </div>
         </div>
-        <div class="row no-gutters">
+        {% comment %} <div class="row no-gutters">
             {% for obj in object_list %}
             <div class="block-3 d-md-flex" data-scrollax-parent="true">
                 <a href="{{ obj.get_absolute_url }}" {% if not forloop.first %}
@@ -134,7 +134,7 @@
                 </div>
             </div>
             {% endfor %}
-        </div>
+        </div> {% endcomment %}
     </div>
 </section>
 

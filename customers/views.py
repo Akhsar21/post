@@ -13,7 +13,8 @@ def customer_corr_view(request):
 
     print(corr)
     plt.switch_backend('Agg')
-    sns.jointplot(x='budget', y='employment', kind='reg', data=df).set_axis_labels('Company budget', 'No of employees')
+    sns.jointplot(x='budget', y='employment', kind='reg', data=df).set_axis_labels(
+        'Company budget', 'No of employees')
     graph = get_image()
 
     context = {

@@ -1,12 +1,14 @@
+from django.shortcuts import get_object_or_404
+from django.http import JsonResponse
 from rest_framework import status
-from rest_framework import generics
+from rest_framework import generics, authentication
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
 
-from .serializers import PostActionSerializer, PostSerializer
+from .serializers import PostActionSerializer, PostSerializer, PostLikeSerializer
 from blogs.models import Post
-
 
 
 class PostList(generics.ListCreateAPIView):
@@ -63,7 +65,7 @@ def api_delete_blog_view(request, slug):
 @api_view(['POST', ])
 def api_create_blog_view(request):
     account = Account.objects.get(pk=1)
-    post=Post(author=account)
+    post = Post(author=account)
 
     if request.method == "POST":
         serializer = PostSerializer(post, data=request.data)
@@ -97,3 +99,30 @@ def post_action_view(request, *args, **kwargs):
             # Todo:
             pass
     return Response({}, status=200)
+
+
+class PostLikeAPIToggle(APIView):
+    authentication_classes = (authentication.SessionAuthentication,)
+    permission_classes = (IsAuthenticated,)
+    # serializer_class = PostLikeSerializer
+
+    def get(self, request, slug=None, format=None):
+        # slug = self.kwargs.get("slug")
+        obj = get_object_or_404(Post, slug=slug)
+        url_ = obj.get_absolute_url()
+        user = self.request.user
+        updated = False
+        liked = False
+        if user.is_authenticated:
+            if user in obj.likes.all():
+                liked = False
+                obj.likes.remove(user)
+            else:
+                liked = True
+                obj.likes.add(user)
+            updated = True
+        data = {
+            "updated": updated,
+            "liked": liked
+        }
+        return Response(data)

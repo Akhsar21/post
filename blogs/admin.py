@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
-from .models import Author, Category, Post, PostView, Tag, PostLike
+from .models import Author, Category, Post, PostView, Tag
 
 
 @admin.register(Author)
@@ -20,10 +20,6 @@ class AuthorAdmin(admin.ModelAdmin):
         )
 
 
-class PostLikeAdmin(admin.TabularInline):
-    model = PostLike
-
-
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
     '''Admin View for Post'''
@@ -33,14 +29,13 @@ class PostAdmin(admin.ModelAdmin):
         }),
         ('Short descriptions', {
             'classes': ('wide', 'extrapretty'),
-            'fields': ('description', ),
+            'fields': ('description', 'likes'),
         }),
     )
     list_display = ('title', 'created', 'featured', 'restrict_comment')
     list_filter = ('title', 'created')
     search_fields = ['title']
     # view_on_site = True
-    inlines = [PostLikeAdmin]
     list_editable = ('featured', 'restrict_comment')
     readonly_fields = ['post_image', 'slug', ]
     autocomplete_fields = ['tags', ]

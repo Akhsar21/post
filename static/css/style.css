@@ -18,7 +18,7 @@
 *,
 *:focus,
 *:hover {
-    box-shadow: none !important;
+    /* box-shadow: none !important; */
 }
 
 a {
@@ -83,4 +83,18 @@ a {
     bottom: 5%;
     left: 50%;
     transform: translate(-50%, -5%);
+}
+
+.admin-panel {
+    border: 1px solid #999;
+    border-radius: 2px;
+    position: fixed;
+    bottom: 50px;
+    right: 50px;
+    opacity: 0.3;
+    padding: 15px;
+}
+
+.admin-panel:hover {
+    opacity: 0.8;
 }

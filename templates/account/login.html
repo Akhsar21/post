@@ -43,13 +43,13 @@
         </div>
         <div class="row wow fadeIn justify-content-center">
             <div class="col-md-8 col-lg-6">
-                <form class="login" method="POST" action="{% url 'account_login' %}">
+                <form class="ui form" method="POST" action="{% url 'account_login' %}">
                     {% csrf_token %}
                     {{ form|crispy }}
                     {% if redirect_field_value %}
                     <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
                     {% endif %}
-                    <button class="btn py-2 px-4 btn-primary" type="submit">{% trans "Sign In" %}</button>
+                    <button class="ui button primary" type="submit">{% trans "Sign In" %}</button>
                     <a href="{% url 'account_reset_password' %}" class="float-right">{% trans "Forgot Password?" %}</a>
                 </form>
                 <div class="text-center mt-5">

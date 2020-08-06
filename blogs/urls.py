@@ -17,6 +17,5 @@ urlpatterns = [
     path("category", views.CategoryView.as_view(), name="category-list"),
     path("tag", views.TagView.as_view(), name="tag-list"),
     path('getdata', views.getdata, name='getdata'),
-    # path('serialized/', views.post_serialized_view, name='serialized-view'),
-    # path('blog/<slug>/like/', views.PostLikeToggle.as_view(), name='like-toggle'),
+    path('<slug>/like/', views.PostLikeToggle.as_view(), name='like-toggle'),
 ]

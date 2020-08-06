@@ -1,90 +1,43 @@
 {% load static %}
 {% load i18n %}
+{% load menubuilder %}
 
-<nav id="colorlib-main-nav" role="navigation">
-    <a href="#" class="js-colorlib-nav-toggle colorlib-nav-toggle active"><i></i></a>
-    <div class="js-fullheight colorlib-table">
-        <div class="img" style="background-image: url({% static 'images/icons/icon-192x192.png' %});"></div>
-        <div class="colorlib-table-cell js-fullheight">
-            <div class="row no-gutters">
-                <div class="col-md-12 text-center">
-                    <h1 class="mb-4">
-                        {% if user.is_staff %}
-                        <a href="/admin" class="logo">
-                            {% else %}
-                            <a href="/" class="logo">
-                                {% endif %}
-                                Akhsar
-                            </a>
-                    </h1>
-                    {% with url_name=request.resolver_match.url_name %}
-                    <ul>
-                        <li class="{% if url_name == 'home' %}active{% endif %}">
-                            <a href="{% url 'home' %}"><span><small>01</small>Home</span></a>
-                        </li>
-                        <li><a href="about.html"><span><small>02</small>About</span></a></li>
-                        <li><a href="services.html"><span><small>03</small>Services</span></a></li>
-                        <li><a href="portfolio.html"><span><small>04</small>Portfolio</span></a></li>
-                        <li class="{% if url_name == 'post-list' %}active{% endif %}">
-                            <a href="{% url 'post-list' %}"><span><small>05</small>Blog</span></a>
-                        </li>
-                        <li class="{% if url_name == 'contact' %}active{% endif %}">
-                            <a href="{% url 'contact' %}"><span><small>06</small>Contact</span></a>
-                        </li>
-                        <li>
-                            {% if request.user.is_authenticated %}
-                            <a class="small" href="{% url 'account_logout' %}"><span class="icon-sign-out"></span></a>
-                            {% else %}
-                            <a class="small" href="{% url 'account_login' %}"><span class="icon-sign-in"></span></a>
-                            {% endif %}
-                        </li>
-                    </ul>
-                    {% endwith %}
-                </div>
-            </div>
-        </div>
+<header>
+    <div class="brand">
+        <a href="#">Aksar La'ode</a>
     </div>
-</nav>
-
-<div id="colorlib-page">
-    <header>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="colorlib-navbar-brand">
-                        {% if user.is_staff %}
-                        <a href="/admin" class="colorlib-logo">
-                            {% else %}
-                            <a href="/" class="colorlib-logo">
-                                {% endif %}
-                                <span class="logo-img"
-                                    style="background-image: url({% static 'images/icons/icon-192x192.png' %});"></span>
-                                Akhsar
-                            </a>
-                    </div>
-                    <a href="#" class="js-colorlib-nav-toggle colorlib-nav-toggle"><i></i></a>
-                </div>
-            </div>
-        </div>
-    </header>
-    <div class="container">
-        <form action="{% url 'set_language' %}" method="POST">
-            {% csrf_token %}
-            <input name="next" type="hidden" value="{{ redirect_to }}">
-            <select name="language" class="ui dropdown">
-                {% get_current_language as LANGUAGE_CODE %}
-                {% get_available_languages as LANGUAGES %}
-                {% get_language_info_list for LANGUAGES as languages %}
-                {% for language in languages %}
-                <option value="{{ language.code }}" {% if language.code == LANGUAGE_CODE %} selected {% endif %}>
-                <!-- {{ language.name_local }} --> {{ language.code }}
-                </option>
-                {% endfor %}
-            </select>
-            <input class="ui button" type="submit" value="Go">
-        </form>
+    <div class="menu-btn">
+        <span></span>
     </div>
 
-    {% comment %} <script>
-        $('select.dropdown').dropdown();
-    </script> {% endcomment %}
+    <nav class="menu">
+        <ul class="menu-nav">
+            <h5>menu</h5>
+            {% menu main %}
+            {% for item in menuitems %}
+            <li class="nav-item{% if item.current %} current{% endif %}">
+                <a href="{{ item.url }}" class="nav-link">
+                    {{ item.title|escape }}
+                </a>
+            </li>
+            {% endfor %}
+            {% comment %} <form action="{% url 'set_language' %}" method="POST">
+                {% csrf_token %}
+                <input name="next" type="hidden" value="{{ redirect_to }}">
+                <select name="language" class="ui dropdown">
+                    {% get_current_language as LANGUAGE_CODE %}
+                    {% get_available_languages as LANGUAGES %}
+                    {% get_language_info_list for LANGUAGES as languages %}
+                    {% for language in languages %}
+                    <option value="{{ language.code }}" {% if language.code == LANGUAGE_CODE %} selected {% endif %}>
+                        <!-- {{ language.name_local }} --> {{ language.code }}
+                    </option>
+                    {% endfor %}
+                </select>
+                <input class="ui button" type="submit" value="Go">
+            </form> {% endcomment %}
+            <span>&copy; 2020 Aksar La'ode. Made With <ion-icon name="heart-outline"></ion-icon> in Kendari,
+                Sultra</span>
+        </ul>
+    </nav>
+</header>

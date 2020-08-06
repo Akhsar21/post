@@ -1,6 +1,6 @@
 from django.utils.translation import gettext as _
 from django.db import models
-from django.contrib.auth import get_user_model
+from django.contrib.auth.models import User
 from django.core.validators import FileExtensionValidator
 from django.urls import reverse
 from django.utils.text import slugify
@@ -9,16 +9,14 @@ from ckeditor_uploader.fields import RichTextUploadingField
 from profiles.models import Profile
 
 
-User = get_user_model()
-
 STATUS_CHOICES = (
     ('D', 'Draft'),
     ('P', 'Published'),
 )
 
 LIKE_CHOICES = (
-    ('like', 'Like'),
-    ('unlike', 'Unlike'),
+    ('Like', 'Like'),
+    ('Unlike', 'Unlike'),
 )
 
 
@@ -49,16 +47,6 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
-    # def save(self):
-    #     if not self.slug and self.name:
-    #         self.slug = slugify(self.name)
-    #     super().save()
-
-    class Meta:
-        verbose_name = "Category"
-        verbose_name_plural = "Categories"
-        unique_together = ('name', 'slug')
-
     def get_category_url(self):
         return reverse('post-by-category', kwargs={
             'slug': self.slug
@@ -76,11 +64,6 @@ class Tag(models.Model):
     def __str__(self):
         return self.name
 
-    # def save(self):
-    #     if not self.slug and self.name:
-    #         self.slug = slugify(self.name)
-    #     super().save()
-
     class Meta:
         verbose_name = "Tag"
         verbose_name_plural = "Tags"
@@ -90,22 +73,6 @@ class Tag(models.Model):
         return reverse('post-by-tag', kwargs={
             'slug': self.slug
         })
-
-
-class PostLike(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    post = models.ForeignKey("Post", on_delete=models.CASCADE)
-#     value = models.CharField(max_length=6, choices=LIKE_CHOICES)
-    created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        ordering = ['-created']
-        verbose_name = 'Like'
-        verbose_name_plural = 'Likes'
-
-    # def __str__(self):
-    #     return self.user.username
 
 
 class PublishedManager(models.Manager):
@@ -119,27 +86,23 @@ class Post(models.Model):
 
     title = models.CharField(_("title"), max_length=100)
     slug = models.SlugField(unique=True, blank=True, null=True)
-    author = models.ForeignKey(Author,
-                               on_delete=models.CASCADE, blank=True, null=True)
+    author = models.ForeignKey(Author, on_delete=models.CASCADE, blank=True, null=True)
     content = RichTextUploadingField()
     description = models.TextField(max_length=500)
-    status = models.CharField(max_length=1,
-                              choices=STATUS_CHOICES, default='D')
-    thumbnail = models.ImageField(upload_to='posts/%Y/%m/%d', validators=[
-        FileExtensionValidator(['png', 'jpg', 'jpeg'])], blank=True)
+    status = models.CharField(max_length=1, choices=STATUS_CHOICES, default='D')
+    thumbnail = models.ImageField(upload_to='posts/%Y/%m/%d', validators=[FileExtensionValidator(['png', 'jpg', 'jpeg'])], blank=True)
     created = models.DateTimeField(auto_now_add=True, editable=None)
     updated = models.DateTimeField(auto_now=True, editable=None)
-    likes = models.ManyToManyField(User,
-                                   related_name='likes', blank=True, through=PostLike)
+    likes = models.ManyToManyField(User, related_name='likes', blank=True)
     tags = models.ManyToManyField(Tag)
-    category = models.ForeignKey(Category,
-                                 on_delete=models.SET_NULL, null=True)
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
     featured = models.BooleanField(default=False)
     restrict_comment = models.BooleanField(default=False)
     # previous_post = models.ForeignKey('self', related_name='previous',
     #                                   on_delete=models.SET_NULL, blank=True, null=True)
     # next_post = models.ForeignKey('self', related_name='next',
     #                               on_delete=models.SET_NULL, blank=True, null=True)
+# , through="Like"
 
     class Meta:
         ordering = ['-created']
@@ -166,9 +129,30 @@ class Post(models.Model):
     def get_delete_url(self):
         return reverse('post-delete', kwargs={'slug': self.slug})
 
-    def total_likes(self):
-        return self.likes.all().count()
+    def get_like_url(self):
+        return reverse("like-toggle", kwargs={"slug": self.slug})
+
+    def get_api_like_url(self):
+        return reverse("like-api-toggle", kwargs={"slug": self.slug})
+
+    # @property
+    # def total_likes(self):
+    #     return self.likes.all().count()
 
     @property
     def view_count(self):
         return PostView.objects.filter(post=self).count()
+
+
+# class Like(models.Model):
+#     user = models.ForeignKey(User, on_delete=models.CASCADE)
+#     post = models.ForeignKey(Post, on_delete=models.CASCADE)
+#     value = models.CharField(max_length=10, default='Like', choices=LIKE_CHOICES)
+#     created = models.DateTimeField(auto_now_add=True)
+#     updated = models.DateTimeField(auto_now=True)
+
+#     class Meta:
+#         ordering = ['-created']
+
+    # def __str__(self):
+    #     return self.user.username

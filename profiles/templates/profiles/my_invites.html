@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block head_title %}
+my profile
+{% endblock %}
+
+{% block content %}
+<ul>
+    {% for item in qs %}
+    <li>{{ item }}</li>
+    {% endfor %}
+</ul>
+{% endblock %}

@@ -4,6 +4,7 @@
 <script src="https://unpkg.com/@popperjs/core@2"></script>
 <script src="{% static 'js/highlight.pack.js' %}"></script>
 <script src="{% static 'js/highlightjs-badge.min.js' %}"></script>
+<script src="{% static 'js/main1.js' %}"></script>
 {% comment %} <script src="{% static 'js/idb.js' %}"></script>
 <script src="{% static 'js/idbop.js' %}"></script> {% endcomment %}
 <script src="{% static 'js/smooth-scrollbar.js' %}"></script>
@@ -29,15 +30,14 @@
             }
         }) 
         {% for message in messages %}
-        Toast.fire({
-            icon: '{{ message.tags }}',
-            title: '{{ message }}'
-        }) 
+            Toast.fire({
+                icon: '{{ message.tags }}',
+                title: '{{ message }}'
+            }) 
         {% endfor %}
     });
-    
-    $(document).ready(function(){
+
+    $(document).ready(function () {
         $('.ui.dropdown').dropdown();
     });
-
 </script>

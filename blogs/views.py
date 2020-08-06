@@ -3,7 +3,7 @@ from django.db.models import Count, Q
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, get_object_or_404, redirect, reverse
-from django.views.generic import View, ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import View, ListView, DetailView, CreateView, UpdateView, DeleteView, RedirectView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core import serializers
 import json
@@ -84,40 +84,21 @@ class PostDetailView(DetailView):
         return obj
 
     def get_context_data(self, **kwargs):
+        post = self.get_object()
         category_count = get_category_count()
         most_recent = Post.objects.order_by('-published')[:3]
         context = super().get_context_data(**kwargs)
         context['category_count'] = category_count
         context['most_recent'] = most_recent
+        context['admin_object'] = post
         context['page_request_var'] = "page"
         return context
-
-    # def post(self, request, *args, **kwargs):
-    #     user = request.user
-    #     post_id = request.POST.get('id')
-
-    #     post = get_object_or_404(Post, id=post_id)
-    #     is_liked = False
-    #     if post.likes.filter(id=user.id).exists():
-    #         post.likes.remove(user)
-    #         is_liked = False
-    #     else:
-    #         post.likes.add(user)
-    #         is_liked = True
-
-    #     context = {
-    #         'post': post,
-    #         'is_liked': is_liked,
-    #         'total_likes': post.total_likes(),
-    #     }
-    #     if request.is_ajax():
-    #         html = render_to_string('blogs/like_section.html', context, request=request)
-    #         return JsonResponse({'form': html})
 
 
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
     form_class = PostForm
+    raise_exception = True
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -136,6 +117,7 @@ class PostCreateView(LoginRequiredMixin, CreateView):
 class PostUpdateView(LoginRequiredMixin, UpdateView):
     model = Post
     form_class = PostForm
+    raise_exception = True
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -154,7 +136,14 @@ class PostUpdateView(LoginRequiredMixin, UpdateView):
 class PostDeleteView(LoginRequiredMixin, DeleteView):
     model = Post
     success_url = '/blog'
-    # template_name = 'blogs/post_confirm_delete.html'
+    raise_exception = True
+
+    # def get_object(self, *args, **kwargs):
+    #     pk = self.kwargs.get('pk')
+    #     obj = Post.objects.get(pk=pk)
+    #     if not obj.author.user == self.request.user:
+    #         messages.warning(self.request, _("You need to be the author of the post in order to delete it"))
+    #         return obj
 
 
 class CategoryView(ListView):
@@ -197,3 +186,18 @@ def getdata(request):
     results = Post.objects.all()
     jsondata = serializers.serialize('json', results)
     return HttpResponse(jsondata)
+
+
+class PostLikeToggle(RedirectView):
+    def get_redirect_url(self, *args, **kwargs):
+        slug = self.kwargs.get("slug")
+        print(slug)
+        obj = get_object_or_404(Post, slug=slug)
+        url_ = obj.get_absolute_url()
+        user = self.request.user
+        if user.is_authenticated():
+            if user in obj.likes.all():
+                obj.likes.remove(user)
+            else:
+                obj.likes.add(user)
+        return url_

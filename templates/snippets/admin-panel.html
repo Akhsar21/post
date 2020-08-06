@@ -1,0 +1,14 @@
+<div class="admin-panel ui vertical buttons">
+    <a href="/admin" class="ui button inverted green mb-2">Admin</a>
+    <div class="ui dropdown button mb-2">
+        Create
+        <div class="menu">
+            <a href="{% url 'post-create' %}" class="item">Post</a>
+            <a href="" class="item">Tag</a>
+        </div>
+    </div>
+    {% if admin_object %}
+    <a href="{{ admin_object.get_update_url }}" class="ui button mb-2">Edit</a>
+    <a href="{{ admin_object.get_delete_url }}" class="ui button red">Delete</a>
+    {% endif %}
+</div>
