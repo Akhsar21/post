@@ -21,33 +21,33 @@ my profile
             <div class="thirteen wide column">
                 <h3>{{ obj.user }}</h3>
                 <p>{{ obj.bio }}</p>
-                <button class="ui primary button">See profile</button>
+                <a href="{{ obj.get_absolute_url }}" class="ui primary button">See profile</a>
             </div>
-            <form action="" method="POST">
+            {% if obj.user not in rel_receiver and obj.user not in rel_sender %}
+            <form action="{% url 'send-invite' %}" method="POST">
                 {% csrf_token %}
                 <input type="hidden" name="profile_pk" value={{obj.pk}}>
 
-                {% if obj.user not in rel_receiver and obj.user not in rel_sender %}
                 <button type="submit" class="ui positive basic button">
                     <i class="plus square icon"></i>Add to friends
                 </button>
-                {% endif %}
             </form>
+            {% endif %}
             {% if obj.user in rel_receiver and request.user not in obj.friends.all %}
             <button class="ui disabled button">
                 <i class="user icon"></i>Waiting for approval
             </button>
             {% endif %}
-            <form action="" method="POST">
+            {% if request.user in obj.friends.all %}
+            <form action="{% url 'remove-friend' %}" method="POST">
                 {% csrf_token %}
                 <input type="hidden" name="profile_pk" value={{obj.pk}}>
 
-                {% if request.user in obj.friends.all %}
                 <button type="submit" class="ui negative basic button">
                     <i class="minus square icon"></i>Remove from friends
                 </button>
-                {% endif %}
             </form>
+            {% endif %}
         </div>
     </div>
 </div>

@@ -5,6 +5,7 @@ from django.db.models import Value
 from django.db.models.functions import Concat
 from django.db import models
 from django.contrib.auth.models import User
+from django.shortcuts import reverse
 from django.utils.text import slugify
 from PIL import Image
 import numpy as np
@@ -64,20 +65,33 @@ class Profile(models.Model):
     def __str__(self):
         return f"{self.user.username}-{self.created.strftime('%d-%m-%Y')}"
 
+    def get_absolute_url(self):
+        return reverse("profile-detail-view", kwargs={"slug": self.slug})
+
     def full_name(self):
         return self.user.first_name + ' ' + self.user.last_name
     full_name.admin_order_field = Concat('first_name', Value(' '), 'last_name')
 
+    __initial_first_name = None
+    __initial_last_name = None
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.__initial_first_name = self.user.first_name
+        self.__initial_last_name = self.user.last_name
+
     def save(self, *args, **kwargs):
         ex = False
-        if self.user.first_name and self.user.last_name:
-            to_slug = slugify(str(self.user.first_name) + " " + str(self.user.last_name))
-            ex = Profile.objects.filter(slug=to_slug).exists()
-            while ex:
-                to_slug = slugify(to_slug + " " + str(get_random_code()))
+        to_slug = self.slug
+        if self.user.first_name != self.__initial_first_name or self.user.last_name != self.__initial_last_name or self.slug == "":
+            if self.user.first_name and self.user.last_name:
+                to_slug = slugify(str(self.user.first_name) + " " + str(self.user.last_name))
                 ex = Profile.objects.filter(slug=to_slug).exists()
-        else:
-            to_slug = str(self.user)
+                while ex:
+                    to_slug = slugify(to_slug + " " + str(get_random_code()))
+                    ex = Profile.objects.filter(slug=to_slug).exists()
+            else:
+                to_slug = str(self.user)
         self.slug = to_slug
 
         # # open image
@@ -107,28 +121,28 @@ class Profile(models.Model):
     def get_posts_count(self):
         return self.posts.all().count()
 
-    # def get_all_authors_posts(self):
-    #     return self.posts.all()
+    def get_all_authors_posts(self):
+        return self.posts.all()
 
-    # def get_likes_given_count(self):
-    #     likes = self.like_set.all()
-    #     total_liked = 0
-    #     for item in likes:
-    #         if item.value == 'like':
-    #             total_liked += 1
-    #     return total_liked
+    def get_likes_given_count(self):
+        likes = self.like_set.all()
+        total_liked = 0
+        for item in likes:
+            if item.value == 'like':
+                total_liked += 1
+        return total_liked
 
-    # def get_likes_received_count(self):
-    #     posts = self.posts.all()
-    #     total_liked = 0
-    #     for item in posts:
-    #         total_liked += item.likes.all().count()
-    #     return total_liked
+    def get_likes_received_count(self):
+        posts = self.posts.all()
+        total_liked = 0
+        for item in posts:
+            total_liked += item.likes.all().count()
+        return total_liked
 
 
 STATUS_CHOICES = (
-    ('sender', 'Sender'),
-    ('accepted', 'Accepted')
+    ('send', 'Send'),
+    ('accept', 'Accept')
 )
 
 
