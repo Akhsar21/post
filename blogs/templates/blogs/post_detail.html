@@ -40,12 +40,32 @@
                     </div>
                     <div id="like-section">
                         {% comment %} {% include 'blogs/like_section.html' %} {% endcomment %}
-                        <p>
+                        {% comment %} <p>
                             <a class='like-btn ui button' data-href='{{ post.get_api_like_url }}'
                                 data-likes='{{ post.likes.count }}'
                                 href='{{ post.get_like_url }}'>{{ post.likes.count }} Like
                             </a>
-                        </p>
+                        </p> {% endcomment %}
+
+                        <form action="{% url 'like-post-view' %}" method="POST" class="like-form" id="{{ post.id }}">
+                            {% csrf_token %}
+                            <input type="hidden" name="post_id" value={{post.id}}>
+                            <button type="submit" class="ui button like-btn{{ post.id }}">
+                                {% if profile not in post.liked.all %}
+                                Like
+                                {% else %}
+                                Unlike
+                                {% endif %}
+                            </button>
+                            <div class="ui grid">
+                                <div class="column">
+                                    <div class="like-count{{ post.id }}">{{ post.num_likes }}</div>
+                                </div>
+                                <div class="column">
+                                    likes
+                                </div>
+                            </div>
+                        </form>
 
                     </div>
                 </div>
@@ -100,40 +120,41 @@
     window.highlightJsBadge(options);
 
     $(document).ready(function () {
-        function updateText(btn, newCount, verb) {
-            btn.text(newCount + " " + verb)
-        }
-
-        $(".like-btn").click(function (e) {
+        $('.like-form').submit(function (e) {
             e.preventDefault()
-            const this_ = $(this)
-            const likeUrl = this_.attr("data-href")
-            const likeCount = parseInt(this_.attr("data-likes")) | 0
-            const addLike = likeCount + 1
-            const removeLike = likeCount - 1
-            if (likeUrl) {
-                $.ajax({
-                    url: likeUrl,
-                    method: "GET",
-                    data: {},
-                    success: function (data) {
-                        console.log(data)
-                        var newLikes;
-                        if (data.liked) {
-                            updateText(this_, addLike, "Unlike")
-                        } else {
-                            updateText(this_, removeLike, "Like")
-                            // remove one like
-                        }
 
-                    },
-                    error: function (error) {
-                        console.log(error)
-                        console.log("error")
+            const post_id = $(this).attr('id')
+
+            const likeText = $(`.like-btn${post_id}`).text()
+            const trim = $.trim(likeText)
+            const url = $(this).attr('action')
+
+            let res;
+            const likes = $(`.like-count${post_id }`).text()
+            const trimCount = parseInt(likes)
+
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: {
+                    'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val(),
+                    'post_id': post_id,
+                },
+                success: function (response) {
+                    if (trim === 'Unlike') {
+                        $(`.like-btn${post_id}`).text('Like')
+                        res = trimCount - 1
+                    } else {
+                        $(`.like-btn${post_id}`).text('Unlike')
+                        res = trimCount + 1
                     }
-                })
-            }
 
+                    $(`.like-btn${post_id}`).text(res)
+                },
+                error: function (response) {
+
+                },
+            })
         })
     })
 </script>

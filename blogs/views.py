@@ -1,18 +1,20 @@
+from profiles.models import Profile
+from django.contrib.auth.decorators import login_required
 from django.utils.translation import gettext as _
 from django.db.models import Count, Q
 from django.contrib import messages
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+# from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, get_object_or_404, redirect, reverse
-from django.views.generic import View, ListView, DetailView, CreateView, UpdateView, DeleteView, RedirectView
+from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core import serializers
-import json
+# import json
 from django.http import HttpResponse, JsonResponse
-from django.template.loader import render_to_string
+# from django.template.loader import render_to_string
 
 from contacts.forms import EmailSignupForm
-from contacts.models import Signup
-from .forms import PostForm
+# from contacts.models import Signup
+from .forms import PostModelForm, CommentModelForm
 from .models import Post, Author, PostView, Category, Tag
 
 form = EmailSignupForm()
@@ -25,7 +27,7 @@ def get_author(user):
     return None
 
 
-class SearchView(View):
+class SearchView(generic.View):
     def get(self, request, *args, **kwargs):
         queryset = Post.objects.all()
         query = request.GET.get('q')
@@ -49,7 +51,7 @@ def get_category_count():
     return queryset
 
 
-class PostListView(ListView):
+class PostListView(generic.ListView):
     form = EmailSignupForm()
     model = Post
     context_object_name = 'queryset'
@@ -70,7 +72,7 @@ class PostListView(ListView):
         return context
 
 
-class PostDetailView(DetailView):
+class PostDetailView(generic.DetailView):
     model = Post
     # form = CommentForm()
 
@@ -95,7 +97,7 @@ class PostDetailView(DetailView):
         return context
 
 
-class PostCreateView(LoginRequiredMixin, CreateView):
+class PostCreateView(LoginRequiredMixin, generic.CreateView):
     model = Post
     form_class = PostForm
     raise_exception = True
@@ -114,9 +116,9 @@ class PostCreateView(LoginRequiredMixin, CreateView):
         }))
 
 
-class PostUpdateView(LoginRequiredMixin, UpdateView):
+class PostUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = Post
-    form_class = PostForm
+    form_class = PostModelForm
     raise_exception = True
 
     def get_context_data(self, **kwargs):
@@ -133,7 +135,7 @@ class PostUpdateView(LoginRequiredMixin, UpdateView):
         }))
 
 
-class PostDeleteView(LoginRequiredMixin, DeleteView):
+class PostDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Post
     success_url = '/blog'
     raise_exception = True
@@ -146,11 +148,11 @@ class PostDeleteView(LoginRequiredMixin, DeleteView):
     #         return obj
 
 
-class CategoryView(ListView):
+class CategoryView(generic.ListView):
     model = Category
 
 
-class PostCategoryView(ListView):
+class PostCategoryView(generic.ListView):
     model = Post
     template_name = 'posts/post_category.html'
 
@@ -164,11 +166,11 @@ class PostCategoryView(ListView):
         return context
 
 
-class TagView(ListView):
+class TagView(generic.ListView):
     model = Tag
 
 
-class PostTagView(ListView):
+class PostTagView(generic.ListView):
     model = Post
     template_name = 'posts/post_tag.html'
 
@@ -188,7 +190,7 @@ def getdata(request):
     return HttpResponse(jsondata)
 
 
-class PostLikeToggle(RedirectView):
+class PostLikeToggle(generic.RedirectView):
     def get_redirect_url(self, *args, **kwargs):
         slug = self.kwargs.get("slug")
         print(slug)
@@ -201,3 +203,79 @@ class PostLikeToggle(RedirectView):
             else:
                 obj.likes.add(user)
         return url_
+
+
+@login_required
+def like_unlike_post(request):
+    user = request.user
+    if request.method == 'POST':
+        post_id = request.POST.get('post_id')
+        post_obj = Post.objects.get(id=post_id)
+        profile = Profile.objects.get(user=user)
+
+        if profile in post_obj.liked.all():
+            post_obj.liked.remove(profile)
+        else:
+            post_obj.liked.add(profile)
+
+        like, created = Like.objects.get_or_create(user=profile, post_id=post_id)
+
+        if not created:
+            if like.value == 'Like':
+                like.value = 'Unlike'
+            else:
+                like.value = 'Like'
+        else:
+            like.value = 'Like'
+
+            post_obj.save()
+            like.save()
+
+        data = {
+            'value': like.value,
+            'likes': post_obj.liked.all().count()
+        }
+
+        return JsonResponse(data, safe=False)
+    return redirect('post-detail')
+
+
+@login_required
+def post_comment_create_and_list_view(request):
+    qs = Post.objects.all()
+    profile = Profile.objects.get(user=request.user)
+
+    # initials
+    p_form = PostModelForm()
+    c_form = CommentModelForm()
+    post_added = False
+
+    if 'submit_p_form' in request.POST:
+        print(request.POST)
+        p_form = PostModelForm(request.POST, request.FILES)
+        if p_form.is_valid():
+            instance = p_form.save(commit=False)
+            instance.author = profile
+            instance.save()
+            p_form = PostModelForm()
+            post_added = True
+
+    if 'submit_c_form' in request.POST:
+        print(request.POST)
+        c_form = CommentModelForm(request.POST)
+        if c_form.is_valid():
+            instance = c_form.save(commit=False)
+            instance.user = profile
+            instance.post = Post.objects.get(id=request.POST.get('post_id'))
+            instance.save()
+            c_form = PostModelForm()
+
+    context = {
+        'qs' = qs,
+        'profile' = profile,
+        'p_form' = p_form,
+        'c_form' = c_form,
+        'post_added' = post_added,
+    }
+
+    return render(request, 'posts/main.html', context)
